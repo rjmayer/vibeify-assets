@@ -1,0 +1,11 @@
+{
+  "id": "ISSUE-1234",
+  "title": "Implement create user endpoint",
+  "description": "As an admin I want to create users so that they can log in.",
+  "acceptance_criteria": [
+    "Unique email per user",
+    "Return 201 on success, 400 on validation error",
+    "Do not expose password hashes"
+  ],
+  "labels": ["backend", "user-service"]
+}
