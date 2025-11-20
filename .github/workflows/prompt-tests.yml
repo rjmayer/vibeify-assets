@@ -20,7 +20,14 @@ jobs:
           node-version: "20"
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          if [ -f package-lock.json ] || [ -f npm-shrinkwrap.json ]; then
+            echo "Lockfile detected — running npm ci"
+            npm ci --no-audit --no-fund
+          else
+            echo "No lockfile — running npm install"
+            npm install --no-audit --no-fund
+          fi
 
       - name: Run prompt tests
         run: npm test
