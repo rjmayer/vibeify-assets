@@ -1,7 +1,7 @@
 {
-  "name": "vibeify-template",
+  "name": "vibeify-assets",
   "version": "1.0.0",
-  "description": "Canonical Vibeify /vibeify folder template with prompt schema, linter, and tests.",
+  "description": "Canonical Vibeify /vibeify/assets folder template with prompt schema, linter, and tests.",
   "private": true,
   "scripts": {
     "test": "node prompt-tests/test_runner.js",
