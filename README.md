@@ -1,4 +1,4 @@
-# Vibeify Template
+# Vibeify Assets
 
 This repository defines the **canonical `/vibeify` folder template** used by the Vibeify CLI.
 
