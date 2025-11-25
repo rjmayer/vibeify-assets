@@ -1,0 +1,1 @@
+Read the description of issue %issue-id%, try to figure out what's meant in the context of the codebase, add a comment to the issue describing your interprtation
