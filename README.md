@@ -13,6 +13,63 @@ When the Vibeify CLI initializes a project, it copies the contents of this repo�
 
 ---
 
+## Template Manifest
+
+The **`manifest.yaml`** file is the source of truth for which files exist in this template repository and how they should be installed into user projects.
+
+### Manifest Structure
+
+```yaml
+version: 1
+
+files:
+  - source: registry/onboarding.md           # Path in template repo
+    target: vibeify/registry/onboarding.md   # Path in user project
+    user_editable: true                      # Can users modify this file?
+    update_strategy: preserve-changes        # How to handle updates
+    description: "General project context"   # Human-readable description
+    when:                                    # Optional conditional logic
+      env: github
+```
+
+### FileEntry Fields
+
+| Field | Required | Default | Description |
+|-------|----------|---------|-------------|
+| `source` | Yes | — | Relative path to the file in this template repository |
+| `target` | Yes | — | Where the file should be placed in the user's project |
+| `user_editable` | No | `true` | If `false`, CLI treats file as "managed" and may overwrite |
+| `update_strategy` | No | `preserve-changes` | How updates behave (see below) |
+| `description` | No | — | Human-readable documentation |
+| `when` | No | — | Conditional installation rules (future-ready) |
+
+### Update Strategies
+
+| Strategy | Behavior |
+|----------|----------|
+| `preserve-changes` | Never overwrite user-changed files; mark drift during audit |
+| `overwrite` | Always replace local file with template version |
+| `skip` | Ignore this file during updates and installs |
+| `merge-attempt` | Reserved for future — attempt 3-way merge |
+
+### Validation
+
+The manifest is validated against `manifest.schema.json`. Run validation with:
+
+```bash
+npm run validate:manifest
+```
+
+### Generating a Baseline Manifest
+
+To generate a new manifest from the repository structure:
+
+```bash
+npm run generate:manifest           # Writes to manifest.yaml
+npm run generate:manifest -- --dry-run  # Preview without writing
+```
+
+
 ## Contents
 
 ```text
