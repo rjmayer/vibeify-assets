@@ -5,7 +5,9 @@
   "private": true,
   "scripts": {
     "test": "node prompt-tests/test_runner.js",
-    "lint:prompts": "node tools/prompt-linter.js services"
+    "lint:prompts": "node tools/prompt-linter.js services",
+    "generate:manifest": "node tools/generate-manifest.js",
+    "validate:manifest": "node tools/validate-manifest.js"
   },
   "dependencies": {
     "ajv": "^8.17.1",

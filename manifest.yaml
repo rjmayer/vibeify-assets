@@ -1,0 +1,333 @@
+# yaml-language-server: $schema=./manifest.schema.json
+# Vibeify Template Manifest
+# This manifest defines all template files and their installation behavior
+
+version: 1
+
+files:
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Registry - Context files
+  # ─────────────────────────────────────────────────────────────────────────────
+  - source: registry/templates/context/onboarding.md
+    target: vibeify/registry/onboarding.md
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "General project context entry point for AI agents"
+
+  - source: registry/templates/context/styleguide.md
+    target: vibeify/registry/styleguide.md
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "Coding and prompt style conventions"
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Registry - API Specs
+  # ─────────────────────────────────────────────────────────────────────────────
+  - source: registry/api-specs/README.md
+    target: vibeify/registry/api-specs/README.md
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "Placeholder for OpenAPI / API documentation"
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Registry - Prompt Schema
+  # ─────────────────────────────────────────────────────────────────────────────
+  - source: registry/prompts/prompt-schema.json
+    target: vibeify/registry/prompt-schema.json
+    user_editable: false
+    update_strategy: overwrite
+    description: "JSON Schema for validating prompt YAML structure"
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Registry - Text Prompts
+  # ─────────────────────────────────────────────────────────────────────────────
+  - source: registry/prompts/text/000-generate-mvp-ma.md
+    target: vibeify/registry/prompts/text/000-generate-mvp-ma.md
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "MVP generation prompt for mobile apps"
+
+  - source: registry/prompts/text/000-generate-mvp-web3.md
+    target: vibeify/registry/prompts/text/000-generate-mvp-web3.md
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "MVP generation prompt for Web3 projects"
+
+  - source: registry/prompts/text/010-generate-rdmap-ai.md
+    target: vibeify/registry/prompts/text/010-generate-rdmap-ai.md
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "AI roadmap generation prompt"
+
+  - source: registry/prompts/text/020-hlfl-to-epic-map-template.md
+    target: vibeify/registry/prompts/text/020-hlfl-to-epic-map-template.md
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "High-level feature list to epic mapping template"
+
+  - source: registry/prompts/text/auto-summary.md
+    target: vibeify/registry/prompts/text/auto-summary.md
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "Automatic summary generation prompt"
+
+  - source: registry/prompts/text/change-log.md
+    target: vibeify/registry/prompts/text/change-log.md
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "Change log generation prompt"
+
+  - source: registry/prompts/text/code-review.md
+    target: vibeify/registry/prompts/text/code-review.md
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "Code review prompt"
+
+  - source: registry/prompts/text/concept-cp-ma.md
+    target: vibeify/registry/prompts/text/concept-cp-ma.md
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "Concept prompt for mobile apps"
+
+  - source: registry/prompts/text/generate-issues.md
+    target: vibeify/registry/prompts/text/generate-issues.md
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "Issue generation prompt"
+
+  - source: registry/prompts/text/roadmap.md
+    target: vibeify/registry/prompts/text/roadmap.md
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "Roadmap generation prompt"
+
+  - source: registry/prompts/text/sw-lifecycle.md
+    target: vibeify/registry/prompts/text/sw-lifecycle.md
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "Software lifecycle prompt"
+
+  - source: registry/prompts/text/wtf.md
+    target: vibeify/registry/prompts/text/wtf.md
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "WTF debugging prompt"
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Registry - Issue Templates
+  # ─────────────────────────────────────────────────────────────────────────────
+  - source: registry/templates/issue/bug.md
+    target: vibeify/registry/templates/issue/bug.md
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "Bug report issue template"
+
+  - source: registry/templates/issue/chore.md
+    target: vibeify/registry/templates/issue/chore.md
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "Chore issue template"
+
+  - source: registry/templates/issue/feature.md
+    target: vibeify/registry/templates/issue/feature.md
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "Feature request issue template"
+
+  - source: registry/templates/issue/iap-and-store.md
+    target: vibeify/registry/templates/issue/iap-and-store.md
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "In-app purchase and store issue template"
+
+  - source: registry/templates/issue/insights-cache.md
+    target: vibeify/registry/templates/issue/insights-cache.md
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "Insights cache issue template"
+
+  - source: registry/templates/issue/sqlite-schema.md
+    target: vibeify/registry/templates/issue/sqlite-schema.md
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "SQLite schema issue template"
+
+  - source: registry/templates/issue/stabilize-solunar.md
+    target: vibeify/registry/templates/issue/stabilize-solunar.md
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "Solunar stabilization issue template"
+
+  - source: registry/templates/issue/task.md
+    target: vibeify/registry/templates/issue/task.md
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "Task issue template"
+
+  - source: registry/templates/issue/test-viru-badly-described-feature-issue.md
+    target: vibeify/registry/templates/issue/test-viru-badly-described-feature-issue.md
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "Test template for badly described features"
+
+  - source: registry/templates/issue/test-viru-generate-issues.md
+    target: vibeify/registry/templates/issue/test-viru-generate-issues.md
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "Test template for issue generation"
+
+  - source: registry/templates/issue/weather-client.md
+    target: vibeify/registry/templates/issue/weather-client.md
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "Weather client issue template"
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Registry - Pull Request Templates
+  # ─────────────────────────────────────────────────────────────────────────────
+  - source: registry/templates/pull-request/pr.md
+    target: vibeify/registry/templates/pull-request/pr.md
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "Pull request template"
+
+  - source: registry/templates/pull-request/sqlite-schema.md
+    target: vibeify/registry/templates/pull-request/sqlite-schema.md
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "SQLite schema pull request template"
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Registry - Instructions
+  # ─────────────────────────────────────────────────────────────────────────────
+  - source: registry/templates/instructions/agile-dev/definition-of-done.md
+    target: vibeify/registry/instructions/agile-dev/definition-of-done.md
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "Definition of done for agile development"
+
+  - source: registry/templates/instructions/security/SECURITY.md
+    target: vibeify/registry/instructions/security/SECURITY.md
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "Security guidelines and policies"
+
+  - source: registry/templates/instructions/testing/IAP_TESTING.md
+    target: vibeify/registry/instructions/testing/IAP_TESTING.md
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "In-app purchase testing instructions"
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Services - Example Service
+  # ─────────────────────────────────────────────────────────────────────────────
+  - source: services/example/prompts/create_user.yaml
+    target: vibeify/services/example/prompts/create_user.yaml
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "Example prompt for creating a user"
+
+  - source: services/example/prompts/list_users.yaml
+    target: vibeify/services/example/prompts/list_users.yaml
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "Example prompt for listing users"
+
+  - source: services/example/context/db-schema.yaml
+    target: vibeify/services/example/context/db-schema.yaml
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "Example database schema context"
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Tools
+  # ─────────────────────────────────────────────────────────────────────────────
+  - source: tools/prompt-linter.js
+    target: vibeify/tools/prompt-linter.js
+    user_editable: false
+    update_strategy: overwrite
+    description: "Static checks for prompt quality"
+
+  - source: tools/prompt-cli.js
+    target: vibeify/tools/prompt-cli.js
+    user_editable: false
+    update_strategy: overwrite
+    description: "Simple runner that assembles prompt + context"
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Prompt Tests
+  # ─────────────────────────────────────────────────────────────────────────────
+  - source: prompt-tests/test_runner.js
+    target: vibeify/prompt-tests/test_runner.js
+    user_editable: false
+    update_strategy: overwrite
+    description: "Test runner for validating prompts against schema"
+
+  - source: prompt-tests/fixtures/sample.json
+    target: vibeify/prompt-tests/fixtures/sample.json
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "Sample test fixture"
+
+  - source: prompt-tests/fixtures/sample_issue.json
+    target: vibeify/prompt-tests/fixtures/sample_issue.json
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "Sample issue payload fixture"
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Inbox - Draft prompts
+  # ─────────────────────────────────────────────────────────────────────────────
+  - source: inbox/examples/mvp.md
+    target: vibeify/inbox/examples/mvp.md
+    user_editable: true
+    update_strategy: skip
+    description: "Example draft prompt in inbox"
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Outbox - AI outputs
+  # ─────────────────────────────────────────────────────────────────────────────
+  - source: outbox/examples/000-mvp-ma.md
+    target: vibeify/outbox/examples/000-mvp-ma.md
+    user_editable: true
+    update_strategy: skip
+    description: "Example AI output for mobile app MVP"
+
+  - source: outbox/examples/000-mvp-web3.md
+    target: vibeify/outbox/examples/000-mvp-web3.md
+    user_editable: true
+    update_strategy: skip
+    description: "Example AI output for Web3 MVP"
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Xtras - Default
+  # ─────────────────────────────────────────────────────────────────────────────
+  - source: xtras/default/repository-instructions.md
+    target: .github/repository-instructions.md
+    user_editable: true
+    update_strategy: preserve-changes
+    description: "Default repository instructions"
+    when:
+      env: github
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Xtras - GitHub Copilot
+  # ─────────────────────────────────────────────────────────────────────────────
+  - source: xtras/github/copilot/examples/copilot-instructions.md
+    target: .github/copilot-instructions.md
+    user_editable: false
+    update_strategy: overwrite
+    description: "GitHub Copilot configuration instructions"
+    when:
+      env: github
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # Xtras - GitHub Workflows
+  # ─────────────────────────────────────────────────────────────────────────────
+  - source: xtras/github/workflows/prompt-tests.yml
+    target: .github/workflows/prompt-tests.yml
+    user_editable: false
+    update_strategy: overwrite
+    description: "CI workflow for running prompt tests"
+    when:
+      env: github
