@@ -9,13 +9,13 @@ It is **stack‑agnostic** and focuses on:
 - Shipping **tests and linters** so prompt quality is CI‑enforced
 - Remaining **safe to copy and modify** inside any host project
 
-When the Vibeify CLI initializes a project, it copies the contents of this repo’s `/vibeify` structure into the target repository. After that, the host project owns and freely modifies those files.
+When the Vibeify CLI initializes a project, it copies the contents of this repo’s `/vibeify` structure into the target repository. After that, the host project owns and freely modifies those files as appropriate (within the boundaries set by the repo manifest, see below).
 
 ---
 
 ## Template Manifest
 
-The **`manifest.yaml`** file is the source of truth for which files exist in this template repository and how they should be installed into user projects.
+The definitive source of truth for which files belong in this template, and how they are managed, is the **[`manifest.yaml`](manifest.yaml)** file in the root of this repository. _**All installation, update, and sync behavior for template files is governed by the manifest.**_
 
 ### Manifest Structure
 
@@ -32,25 +32,29 @@ files:
       env: github
 ```
 
+Only files explicitly listed in `manifest.yaml` are considered part of the template. File presence in the repository **does not automatically mean it will be installed or updated**—the manifest is authoritative.
+
 ### FileEntry Fields
 
-| Field | Required | Default | Description |
-|-------|----------|---------|-------------|
-| `source` | Yes | — | Relative path to the file in this template repository |
-| `target` | Yes | — | Where the file should be placed in the user's project |
-| `user_editable` | No | `true` | If `false`, CLI treats file as "managed" and may overwrite |
-| `update_strategy` | No | `preserve-changes` | How updates behave (see below) |
-| `description` | No | — | Human-readable documentation |
-| `when` | No | — | Conditional installation rules (future-ready) |
+| Field             | Required | Default            | Description                                                             |
+|-------------------|----------|--------------------|-------------------------------------------------------------------------|
+| `source`          | Yes      | —                  | Relative path to the file in this template repository                    |
+| `target`          | Yes      | —                  | Where the file should be placed in the user's project                    |
+| `user_editable`   | No       | `true`             | If `false`, CLI treats file as managed and may overwrite                 |
+| `update_strategy` | No       | `preserve-changes` | How updates behave (see below)                                           |
+| `description`     | No       | —                  | Human-readable documentation                                             |
+| `when`            | No       | —                  | Conditional installation rules (future-ready)                            |
+
+Whenever the README and manifest conflict, **the manifest is always correct**.
 
 ### Update Strategies
 
-| Strategy | Behavior |
-|----------|----------|
-| `preserve-changes` | Never overwrite user-changed files; mark drift during audit |
-| `overwrite` | Always replace local file with template version |
-| `skip` | Ignore this file during updates and installs |
-| `merge-attempt` | Reserved for future — attempt 3-way merge |
+| Strategy           | Behavior                                                                            |
+|--------------------|-------------------------------------------------------------------------------------|
+| `preserve-changes` | Never overwrite user-changed files; mark drift during audit                         |
+| `overwrite`        | Always replace local file with template version                                      |
+| `skip`             | Ignore this file during updates and installs                                         |
+| `merge-attempt`    | Reserved for future — attempt 3-way merge                                            |
 
 ### Validation
 
@@ -62,15 +66,18 @@ npm run validate:manifest
 
 ### Generating a Baseline Manifest
 
-To generate a new manifest from the repository structure:
+To generate a new manifest from the repository structure (the manifest will control installation):
 
 ```bash
 npm run generate:manifest           # Writes to manifest.yaml
 npm run generate:manifest -- --dry-run  # Preview without writing
 ```
 
+---
 
-## Contents
+## Template Contents
+
+_**Refer directly to `manifest.yaml` for the authoritative list of files and their mappings. The content structure below is a convenience summary only.**_
 
 ```text
 /registry
@@ -103,23 +110,29 @@ npm run generate:manifest -- --dry-run  # Preview without writing
 package.json                          ← Node dependencies & scripts
 ```
 
+Notes:
+- Not every file above may be copied or managed by default—**the official inclusion and update behavior is set by `manifest.yaml`.**
+- Some files may exist in the repo but be excluded from installs; see the manifest for their status.
+
 ---
 
 ## Intended Usage
 
-1. **As a template repo**  
-   - Click “Use this template” on GitHub, or
-   - Clone and copy `/vibeify` into an existing project.
+### 1. As a template repo
+- Click “Use this template” on GitHub, or
+- Clone and copy `/vibeify` into an existing project.
+- When installing/copying, **always consult the manifest to understand which files will be included and update behavior.**
 
-2. **As the source of truth for the Vibeify CLI**  
-   The CLI will:
-   - Fetch the latest version of this template
-   - Copy its `/vibeify` structure into the host project
-   - Optionally run `npm test` (prompt tests) as a verification step
+### 2. As the source of truth for the Vibeify CLI
+The CLI:
+- Fetches the latest version of this template
+- Reads the manifest for the list of files, paths, user-editable flags, and update strategies
+- Copies files accordingly into the host project
+- Optionally runs `npm test` (prompt tests) as a verification step
 
-3. **As documentation of the Vibe Coding workflow**  
-   `registry/onboarding.md` and `registry/styleguide.md` serve as
-   the default guidance for any AI agent working inside the project.
+### 3. As documentation of the Vibe Coding workflow
+`registry/onboarding.md` and `registry/styleguide.md` serve as
+the default guidance for any AI agent working inside the project (as included by the manifest).
 
 ---
 
@@ -243,16 +256,13 @@ without passing automated checks.
 
 ## Modifying the Template
 
-When copied into a host project, these files are **meant to be edited**:
+When copied into a host project, **editability is governed by the `user_editable` flag in `manifest.yaml`**:
 
-- `registry/onboarding.md` – replace with your real project onboarding
-- `registry/styleguide.md` – customise coding + prompt conventions
-- `services/example/**` – replace or extend with real services
-- `prompt-tests/**` – add project‑specific scenarios and fixtures
+- Files marked `user_editable: true` (e.g. `registry/onboarding.md`, `registry/styleguide.md`) are meant to be customized by users in downstream projects.
+- Files marked `user_editable: false` are managed by the template and may be overwritten or require sync.
+- The **manifest** is always the source of truth for which files are intended for modification.
 
-The only strong recommendation is to keep the **overall layout** and
-the **core fields in the prompt schema** so tools and CI jobs can
-continue to work across projects.
+The only strong recommendation is to keep the **overall layout** and the **core fields in the prompt schema** so tools and CI jobs can continue to work across projects.
 
 ---
 
@@ -270,3 +280,7 @@ to the prompt structure.
 ## License
 
 You can adapt this template freely within your own projects. Add a license file here that matches your desired usage model (e.g. MIT, Apache‑2.0).
+
+---
+**Note:**  
+_If there is ever disagreement or ambiguity between this README and the [`manifest.yaml`](manifest.yaml), the manifest is the canonical truth for included files and update policy._
