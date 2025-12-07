@@ -36,8 +36,6 @@ List the concrete tasks the agent must perform, based on:
 ### 3. Constraints
 Include these constraints explicitly:
 - Follow project guidelines, style conventions, and domain-specific context files.
-- Ignore tests, temporary files, or documentation unless explicitly relevant.
-- Never invent missing business logic — request clarification if essential information is absent.
 - Output strictly in the defined format.
 
 Additional constraints:
