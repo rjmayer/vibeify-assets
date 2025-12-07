@@ -7,11 +7,11 @@ The generated prompt must be optimised for use inside automated software-develop
 It should follow clear, deterministic conventions and include all necessary operational detail.
 
 ## Objective
-Generate a prompt that will instruct an AI agent to accomplish:
+Generate a prompt that will instruct an AI agent to accomplish a specific task. For example:
 
-**{{TASK_DESCRIPTION}}**
-
-Example: “perform a software functionality status review”, “generate a new database migration”, “refactor a module”, etc.
+- “perform a software functionality status review”
+- “generate a new database migration”
+- “refactor a module”
 
 ## Required Output Format
 Produce a single prompt in Markdown.  
