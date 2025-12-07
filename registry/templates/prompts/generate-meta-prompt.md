@@ -31,7 +31,7 @@ Address the agent as:
 ### 2. Primary Tasks
 List the concrete tasks the agent must perform, based on:
 
-**{{PRIMARY_TASKS}}**
+{{PRIMARY_TASKS}}
 
 ### 3. Constraints
 Include these constraints explicitly:
@@ -42,12 +42,12 @@ Include these constraints explicitly:
 
 Additional constraints:
 
-**{{CONSTRAINTS}}**
+{{CONSTRAINTS}}
 
 ### 4. Context Injection
 Embed references to context files that should be loaded when the resulting prompt runs:
 
-**{{CONTEXT_REFERENCES}}**
+{{CONTEXT_REFERENCES}}
 
 Examples:  
 `/vibeify/registry/onboarding.md`  
@@ -56,7 +56,7 @@ Examples:
 ### 5. Output Specification
 Define the exact output shape the agent must produce:
 
-**{{OUTPUT_SPEC}}**
+{{OUTPUT_SPEC}}
 
 Examples:  
 - “Return a Markdown report with timestamp + version number.”  
@@ -73,7 +73,7 @@ Include constraints ensuring:
 ### 7. Optional Enhancements
 If applicable:
 
-**{{OPTIONAL_BEHAVIOUR}}**
+{{OPTIONAL_BEHAVIOUR}}
 
 Examples:  
 - performance hints  
