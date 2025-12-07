@@ -19,10 +19,10 @@ The prompt must be ready for direct use inside an agent execution environment.
 Do not include meta commentary or instructions for the human operator.
 
 ## Prompt Requirements
-When generating the prompt, incorporate the following:
+When generating the meta-prompt, incorporate the following:
 
 ### 1. Role & Behaviour
-Define the agent as:
+Address the agent as:
 - a specialised AI {{AGENT_TYPE}} (e.g. coding agent, analyst, refactoring assistant)
 - operating with senior-level autonomy
 - following deterministic, step-by-step execution
