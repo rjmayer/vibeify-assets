@@ -1,7 +1,5 @@
 {{PROMPT_TITLE}} – Universal LLM Instruction Prompt
 
-A structured template for reliable, deterministic LLM behaviour.
-
 ⸻
 
 I. Instruction Layer (What the model is)
@@ -21,8 +19,6 @@ Operating Principles (epistemic style, tone, reasoning depth, etc.):
 II. Goal Layer (What the model must achieve)
 
 2. Primary Objective
-
-Clearly defined end-goal:
 
 {{OBJECTIVE}}
 
@@ -60,7 +56,6 @@ Perform the following tasks sequentially and completely:
 
 7. Reasoning Requirements
 
-Choose the reasoning style the model should use:
 	•	Required reasoning approach: {{REASONING_STYLE}}
 	•	Level of explicitness (e.g., hidden chain-of-thought vs short justification): {{REASONING_VISIBILITY}}
 
@@ -107,8 +102,6 @@ Enable any of the following if provided:
 {{OPTIONAL_BEHAVIOUR}}
 
 13. Quality Improvements
-
-(Examples: add examples, validate logic, check for missing steps, propose alternatives.)
 
 {{QUALITY_CHECKS}}
 
