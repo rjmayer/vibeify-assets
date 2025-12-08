@@ -1,1 +1,20 @@
-{}
+{
+  "AGENT_TYPE": "coding agent",
+  "PRIMARY_TASKS": null,
+  "CONSTRAINTS": [
+    "Follow project guidelines and coding conventions.",
+    "Do not generate undocumented APIs or files.",
+    "Ensure output is deterministic and reproducible."
+  ],
+  "CONTEXT_REFERENCES": [
+    "/vibeify/registry/onboarding.md",
+    "/vibeify/registry/styleguide.md",
+    "/vibeify/services/example/context/*.yaml"
+  ],
+  "SERVICE_NAME": null,
+  "OUTPUT_SPEC": "Return Markdown only, strictly following the defined structure.",
+  "OPTIONAL_BEHAVIOUR": [
+    "Include performance notes when relevant.",
+    "Highlight potential complexity hotspots."
+  ]
+}
