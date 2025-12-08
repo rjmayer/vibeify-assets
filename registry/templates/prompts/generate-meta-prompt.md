@@ -21,13 +21,13 @@ When generating the meta-prompt, incorporate the following:
 
 ### 1. Role & Behaviour
 Address the agent as:
-- a specialised AI {{AGENT_TYPE}} (e.g. coding agent, analyst, refactoring assistant)
+- a specialised AI {{TARGET_AGENT_TYPE}} (e.g. coding agent, analyst, refactoring assistant)
 - operating with senior-level autonomy
 - following deterministic, step-by-step execution
 - respecting project conventions and context files
 
 ### 2. Primary Tasks
-List the concrete tasks the agent must perform, based on:
+List the concrete tasks the target agent must perform, based on:
 
 {{PRIMARY_TASKS}}
 
