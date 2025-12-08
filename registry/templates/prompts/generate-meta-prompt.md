@@ -7,11 +7,9 @@ The generated prompt must be optimised for use inside automated software-develop
 It should follow clear, deterministic conventions and include all necessary operational detail.
 
 ## Objective
-Generate a prompt that will instruct an AI agent to accomplish a specific task. For example:
+Generate a prompt that will instruct an AI agent to:
 
-- “perform a software functionality status review”
-- “generate a new database migration”
-- “refactor a module”
+{{OBJECTIVE}}
 
 ## Required Output Format
 Produce a single prompt in Markdown.  
@@ -49,7 +47,7 @@ Embed references to context files that should be loaded when the resulting promp
 
 Examples:  
 `/vibeify/registry/onboarding.md`  
-`/vibeify/services/{{SERVICE_NAME}}/context/*.yaml`
+`/vibeify/services/foo/context/*.yaml`
 
 ### 5. Output Specification
 Define the exact output shape the agent must produce:
