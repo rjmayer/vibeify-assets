@@ -1,5 +1,5 @@
 {
-  "AGENT_TYPE": "coding agent",
+  "TARGET_AGENT_TYPE": "coding agent",
   "PRIMARY_TASKS": null,
   "CONSTRAINTS": [
     "Follow project guidelines and coding conventions.",
