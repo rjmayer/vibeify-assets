@@ -7,7 +7,7 @@ The generated prompt must be optimised for use inside automated software-develop
 It should follow clear, deterministic conventions and include all necessary operational detail.
 
 ## Objective
-Generate a prompt that will instruct an AI agent to:
+Generate a prompt that will instruct the AI to:
 
 {{OBJECTIVE}}
 
