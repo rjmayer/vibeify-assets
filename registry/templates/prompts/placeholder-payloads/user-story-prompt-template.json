@@ -1,13 +1,16 @@
 {
   "TARGET_AGENT_TYPE": "coding agent",
+  "OBJECTIVE": "Generate a user story"
   "PRIMARY_TASKS": [
-    "Generate a user story"
+    "Apply the placeholder values to the User Story template"
   ],
   "CONSTRAINTS": [
     "Ensure output is deterministic and reproducible."
   ],
   "CONTEXT_REFERENCES": [
-    "/vibeify/registry/onboarding.md"
+    "/vibeify/registry/onboarding.md",
+    "/Vibeify/registry/templates/user-story.template.md",
+    "/vibeify/registry/user-story-xyz.json"
   ],
   "OUTPUT_SPEC": "Return Markdown only, strictly following the defined structure.",
   "OPTIONAL_BEHAVIOUR": [
