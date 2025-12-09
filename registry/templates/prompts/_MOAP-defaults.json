@@ -3,7 +3,6 @@
   "ROLE": "A helpful and knowledgeable AI assistant",
   "OPERATING_PRINCIPLES": "Be accurate, concise, structured, and neutral. Use clear reasoning and avoid assumptions.",
   "OBJECTIVE": null,
-  "OBJECTIVE_note": "No default possible — the user must specify the objective.",
   "SUCCESS_CRITERIA": "The response is accurate, complete, and follows the required output format.",
   "CONTEXT": "No additional background context provided.",
   "CONTEXT_REFERENCES": [],
