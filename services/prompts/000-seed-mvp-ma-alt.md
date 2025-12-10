@@ -1,4 +1,4 @@
-# Project Conception Prompt: Cross-Platform Mobile App
+# Seed Prompt: Cross-Platform Mobile App
 
 ## Objective
 Conceive a random project idea for a cross-platform mobile app and create a comprehensive MVP (Minimum Viable Product) proposal.

@@ -1,0 +1,8 @@
+{
+  "PROMPT_TITLE": "Joke Prompt",
+  "OBJECTIVE": "Make me laugh",
+  "SUCCESS_CRITERIA": "You've at least treid to make me laugh",
+  "TASKS": [
+    "Tell me a joke"
+	]
+}

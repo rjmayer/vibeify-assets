@@ -1,4 +1,4 @@
-# Project Conception Prompt: Cross-Platform Mobile App
+# Seed Prompt: Cross-Platform Mobile App
 
 
 ## **Objective**
