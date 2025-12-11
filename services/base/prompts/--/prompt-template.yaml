@@ -1,0 +1,166 @@
+# ---------------------------------------------------------------------------
+# VIBEIFY PROMPT TEMPLATE
+# ---------------------------------------------------------------------------
+metadata:
+  title: "{{PROMPT_TITLE}}"
+  version: "1.0"
+  description: "Structured multi-layer prompt template"
+  authors: []
+  tags: []
+  created: "{{TIMESTAMP}}"
+
+
+# ---------------------------------------------------------------------------
+# INPUT SCHEMA (for static validation and linting)
+# ---------------------------------------------------------------------------
+schema:
+  type: object
+  required:
+    - ROLE
+    - OBJECTIVE
+    - SUCCESS_CRITERIA
+    - CONTEXT
+  properties:
+    ROLE: { type: string }
+    OPERATING_PRINCIPLES:
+      oneOf:
+        - type: string
+        - type: array
+          items: { type: string }
+    REASONING_STYLE: { type: string }
+    REASONING_VISIBILITY: { type: string }
+    OBJECTIVE: { type: string }
+    SUCCESS_CRITERIA:
+      oneOf:
+        - type: string
+        - type: array
+          items: { type: string }
+    CONTEXT: { type: string }
+    CONTEXT_REFERENCES:
+      type: array
+      items: { type: string }
+    TASKS:
+      type: array
+      items: { type: string }
+    CONSTRAINTS:
+      type: array
+      items: { type: string }
+    PREFERENCES:
+      type: array
+      items: { type: string }
+    OUTPUT_SPEC: { type: string }
+    FORMATTING_RULES: { type: string }
+    OPTIONAL_BEHAVIOUR:
+      type: array
+      items: { type: string }
+    QUALITY_CHECKS:
+      type: array
+      items: { type: string }
+    STRICTNESS_LEVEL: { type: string }
+    TEMPERATURE_HINTS: { type: string }
+    DETERMINISM: { type: string }
+    FINAL_INSTRUCTION: { type: string }
+
+
+# ---------------------------------------------------------------------------
+# PLACEHOLDERS FOR RUNTIME INJECTION
+# ---------------------------------------------------------------------------
+placeholders:
+  ROLE: "{{ROLE}}"
+  OPERATING_PRINCIPLES: "{{OPERATING_PRINCIPLES}}"
+  REASONING_STYLE: "{{REASONING_STYLE}}"
+  REASONING_VISIBILITY: "{{REASONING_VISIBILITY}}"
+  OBJECTIVE: "{{OBJECTIVE}}"
+  SUCCESS_CRITERIA: "{{SUCCESS_CRITERIA}}"
+  CONTEXT: "{{CONTEXT}}"
+  CONTEXT_REFERENCES: "{{CONTEXT_REFERENCES}}"
+  TASKS: "{{TASKS}}"
+  CONSTRAINTS: "{{CONSTRAINTS}}"
+  PREFERENCES: "{{PREFERENCES}}"
+  OUTPUT_SPEC: "{{OUTPUT_SPEC}}"
+  FORMATTING_RULES: "{{FORMATTING_RULES}}"
+  OPTIONAL_BEHAVIOUR: "{{OPTIONAL_BEHAVIOUR}}"
+  QUALITY_CHECKS: "{{QUALITY_CHECKS}}"
+  STRICTNESS_LEVEL: "{{STRICTNESS_LEVEL}}"
+  TEMPERATURE_HINTS: "{{TEMPERATURE_HINTS}}"
+  DETERMINISM: "{{DETERMINISM}}"
+  FINAL_INSTRUCTION: "{{FINAL_INSTRUCTION}}"
+
+
+# ---------------------------------------------------------------------------
+# CONTEXT LAYER
+# ---------------------------------------------------------------------------
+context:
+  text: "{{CONTEXT}}"
+  files: "{{CONTEXT_REFERENCES}}"
+
+
+# ---------------------------------------------------------------------------
+# PROMPT TEMPLATE BODY
+# ---------------------------------------------------------------------------
+template:
+
+  instruction_layer: |
+    **Role:**  
+    You are {{ROLE}}
+
+    **Operating Principles:**  
+    {{OPERATING_PRINCIPLES}}
+
+    **Reasoning Style:**  
+    {{REASONING_STYLE}}
+
+    **Reasoning Visibility:**  
+    {{REASONING_VISIBILITY}}
+
+  goal_layer: |
+    **Primary Objective:** 
+    Your goal is to {{OBJECTIVE}}
+
+    **Success Criteria**
+    {{SUCCESS_CRITERIA}}
+
+  context_layer: |
+    **Context:**
+    {{CONTEXT}}
+
+    External sources:
+    {{CONTEXT_REFERENCES}}
+
+  task_layer: |
+    **Tasks:**
+    {{TASKS}}
+
+  constraint_layer: |
+    **Hard Constraints:**
+    {{CONSTRAINTS}}
+
+    ### Soft Constraints:
+    {{PREFERENCES}}
+
+  output_layer: |
+    ## Output Layer (What the model must return)
+
+    **Required Structure:**  
+    {{OUTPUT_SPEC}}
+
+    **Formatting Rules:**  
+    {{FORMATTING_RULES}}
+
+  enhancement_layer: |
+    ## Enhancement Layer (Optional)
+    {{OPTIONAL_BEHAVIOUR}}
+    {{QUALITY_CHECKS}}
+
+  execution_layer: |
+    ## Execution Layer (Final Instruction)
+    {{FINAL_INSTRUCTION}}
+
+
+# ---------------------------------------------------------------------------
+# DEVELOPER CONTROLS
+# ---------------------------------------------------------------------------
+developer_controls:
+  strictness_level: "{{STRICTNESS_LEVEL}}"
+  temperature: "{{TEMPERATURE_HINTS}}"
+  determinism: "{{DETERMINISM}}"

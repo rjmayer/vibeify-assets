@@ -1,0 +1,87 @@
+id: user.create.v1
+name: Create User Endpoint
+description: >
+  Generate implementation guidance and example code for creating a user in
+  the host backend stack, including validation, error handling, and tests.
+service: user-service
+version: "1.0.0"
+
+tags:
+  - user
+  - http
+  - create
+  - backend
+
+inputs:
+  arguments:
+    - name: user_payload
+      type: object
+      description: >
+        Raw user payload received from the client (e.g. JSON body of an HTTP POST).
+      required: true
+  examples:
+    - name: minimal_example
+      description: Minimal valid user payload with required fields only.
+      payload:
+        user_payload:
+          email: "alice@example.com"
+          name: "Alice"
+    - name: full_example
+      description: >
+        User payload with optional profile fields included. Useful to test
+        more complex validation rules.
+      payload:
+        user_payload:
+          email: "bob@example.com"
+          name: "Bob"
+          phone: "+49 123 456789"
+
+context:
+  files:
+    - services/example/context/db-schema.yaml
+  inline:
+    business_rules:
+      - Email must be unique per user.
+      - Passwords must never be logged or returned to clients.
+      - User records must be soft‑deletable or otherwise auditable.
+    non_goals:
+      - Do not implement full authentication or token handling here.
+
+instructions:
+  steps:
+    - Read the user entity definition from the referenced db-schema.yaml file.
+    - Propose validation rules for the input payload based on the schema and business rules.
+    - Describe how to implement the "create user" operation in the host backend stack.
+    - Include example code or structured pseudo‑code for:
+      - input validation
+      - inserting the user into the data store
+      - handling unique email violations
+    - Provide example tests or usage scenarios that verify the behaviour.
+  model_preferences:
+    temperature: 0.2
+    max_tokens: 1500
+
+output:
+  format: markdown
+  schema:
+    description: >
+      The response must be a markdown document with the following sections:
+      1) "Overview" – short summary of the approach,
+      2) "Implementation" – code or pseudo‑code blocks grouped logically,
+      3) "Validation & Errors" – explanation of validation and error handling,
+      4) "Tests" – suggestions for test cases or example tests.
+  postprocessing_notes: >
+    Humans will copy the suggested implementation into the host codebase and may
+    adjust syntax to match the exact stack (e.g. Node, Java, Python). The overall
+    structure and behaviour should remain consistent.
+
+tests:
+  cases:
+    - name: basic_payload
+      input_ref: minimal_example
+      assertions:
+        must_contain:
+          - "Overview"
+          - "Implementation"
+          - "Validation"
+          - "Tests"
