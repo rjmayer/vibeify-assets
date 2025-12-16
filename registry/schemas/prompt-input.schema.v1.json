@@ -1,0 +1,121 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://vibeify.dev/schemas/prompt-input.schema.v1.json",
+  "title": "Vibeify Prompt Input Schema v1",
+  "description": "Validates the input variables required to render a prompt instance from a prompt template.",
+  "type": "object",
+  "required": [
+    "promptId",
+    "promptClass",
+    "objective"
+  ],
+  "properties": {
+    "promptId": {
+      "type": "string",
+      "description": "Unique identifier for this prompt instance (stable across executions).",
+      "minLength": 1
+    },
+
+    "promptClass": {
+      "type": "string",
+      "description": "Semantic class of the prompt, used to drive linting, policy, and execution rules.",
+      "enum": [
+        "trivial",
+        "conversational",
+        "generative",
+        "transformative",
+        "destructive"
+      ]
+    },
+
+    "objective": {
+      "type": "string",
+      "description": "The primary goal the model must achieve. This is always mandatory.",
+      "minLength": 1
+    },
+
+    "role": {
+      "type": "string",
+      "description": "Persona or operating role the model should adopt.",
+      "default": "A helpful and knowledgeable AI assistant"
+    },
+
+    "constraints": {
+      "type": "array",
+      "description": "Hard rules the model must follow.",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "default": []
+    },
+
+    "successCriteria": {
+      "type": "array",
+      "description": "Conditions that define when the response is considered correct.",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "default": []
+    },
+
+    "contextReferences": {
+      "type": "array",
+      "description": "Paths or identifiers of external context files to be injected into the prompt.",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "default": []
+    },
+
+    "outputFormat": {
+      "type": "string",
+      "description": "Declared format of the expected output.",
+      "enum": [
+        "markdown",
+        "json",
+        "code",
+        "text"
+      ],
+      "default": "markdown"
+    },
+
+    "reasoningVisibility": {
+      "type": "string",
+      "description": "Controls whether the model should expose its reasoning.",
+      "enum": [
+        "hidden",
+        "summary",
+        "full"
+      ],
+      "default": "hidden"
+    },
+
+    "tone": {
+      "type": "string",
+      "description": "Desired tone of the response.",
+      "default": "neutral"
+    },
+
+    "verbosity": {
+      "type": "string",
+      "description": "Desired verbosity level of the response.",
+      "enum": [
+        "concise",
+        "balanced",
+        "verbose"
+      ],
+      "default": "balanced"
+    },
+
+    "language": {
+      "type": "string",
+      "description": "Language the response should be written in.",
+      "default": "en"
+    }
+  },
+
+  "additionalProperties": false
+}

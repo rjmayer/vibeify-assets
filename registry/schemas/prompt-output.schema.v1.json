@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://vibeify.dev/schemas/prompt-output.schema.v1.json",
+  "title": "Vibeify Prompt Output Schema v1",
+  "description": "Validates the structured envelope around an LLM-generated prompt output.",
+  "type": "object",
+  "required": [
+    "promptId",
+    "status",
+    "output"
+  ],
+  "properties": {
+    "promptId": {
+      "type": "string",
+      "description": "The promptId that produced this output."
+    },
+
+    "status": {
+      "type": "string",
+      "description": "Execution outcome status.",
+      "enum": [
+        "success",
+        "partial",
+        "failed"
+      ]
+    },
+
+    "output": {
+      "description": "The primary model output. May be text, markdown, JSON, or code.",
+      "oneOf": [
+        { "type": "string" },
+        { "type": "object" },
+        { "type": "array" }
+      ]
+    },
+
+    "warnings": {
+      "type": "array",
+      "description": "Non-fatal issues detected during validation or execution.",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+
+    "errors": {
+      "type": "array",
+      "description": "Fatal issues that prevented full success.",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+
+    "metadata": {
+      "type": "object",
+      "description": "Execution metadata and diagnostics.",
+      "properties": {
+        "model": {
+          "type": "string"
+        },
+        "durationMs": {
+          "type": "number"
+        },
+        "tokensUsed": {
+          "type": "number"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,5 +1,6 @@
 {
 	"PROMPT_TITLE": null,
+	"PROMPT_DESCRIPTION": null,
 	"ROLE": "a senior software architect.",
 	"OBJECTIVE": null,
 	"SUCCESS_CRITERIA": "The response is accurate, complete, and follows the required output format.",

@@ -1,0 +1,57 @@
+version: 1
+
+description: >
+  Canonical assertion rules for validating prompt outputs based on promptClass.
+  These rules are evaluated after output schema validation and before outputs
+  are accepted into the registry or CI pipeline.
+
+engine:
+  language: js-expression
+  context: prompt-output-envelope
+
+defaults:
+  onFailure: fail
+  severity: error
+
+assertions:
+
+  global:
+    - id: output_present
+      description: Output must be present
+      when: true
+      assert: output != null
+
+    - id: status_valid
+      description: Status must be one of the defined values
+      when: true
+      assert: ["success", "partial", "failed"].includes(status)
+
+  trivial:
+    - id: trivial_no_errors
+      description: Trivial prompts must not fail fatally
+      when: promptClass == "trivial"
+      assert: status != "failed"
+
+  conversational:
+    - id: conversational_output_non_empty
+      description: Conversational prompts must produce non-empty output
+      when: promptClass == "conversational"
+      assert: typeof output === "string" && output.trim().length > 0
+
+  generative:
+    - id: generative_success_or_partial
+      description: Generative prompts may be partial but not failed
+      when: promptClass == "generative"
+      assert: status == "success" || status == "partial"
+
+  transformative:
+    - id: transformative_success_only
+      description: Transformative prompts must succeed
+      when: promptClass == "transformative"
+      assert: status == "success"
+
+  destructive:
+    - id: destructive_strict_success
+      description: Destructive prompts require full success and zero errors
+      when: promptClass == "destructive"
+      assert: status == "success" && errors.length == 0

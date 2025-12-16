@@ -206,6 +206,9 @@ tests:
 
 The **test runner** and **linter** both assume this schema. Projects are free to extend it, but the base fields should remain stable where possible.
 
+> **Schemas that define “what a prompt is” live in /registry/schemas.**
+> **Schemas that define “what a prompt does” live next to the prompt.**
+
 ---
 
 ## Running Prompt Tests Locally

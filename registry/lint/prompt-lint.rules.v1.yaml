@@ -1,0 +1,111 @@
+version: 1
+
+description: >
+  Canonical linting rules for Vibeify prompt artifacts.
+  These rules are evaluated statically before prompt execution.
+
+engine:
+  language: js-expression
+  context: prompt-input-and-metadata
+
+defaults:
+  severity: error
+  onFailure: fail
+
+rules:
+
+  # ─────────────────────────────────────────────
+  # Core structural rules
+  # ─────────────────────────────────────────────
+
+  - id: input_schema_present
+    description: Prompt must declare an input schema reference
+    assert: schema.input != null
+
+  - id: lifecycle_present
+    description: Prompt must declare lifecycle metadata
+    assert: lifecycle != null
+
+  - id: lifecycle_status_valid
+    description: Lifecycle status must be valid
+    assert: ["draft", "review", "approved", "deprecated", "archived"].includes(lifecycle.status)
+
+  - id: objective_present
+    description: Prompt must define an objective
+    assert: typeof objective === "string" && objective.trim().length > 0
+
+  - id: prompt_class_present
+    description: Prompt must define a promptClass
+    assert: ["trivial", "conversational", "generative", "transformative", "destructive"].includes(promptClass)
+
+  # ─────────────────────────────────────────────
+  # Lifecycle governance rules
+  # ─────────────────────────────────────────────
+
+  - id: approved_requires_human
+    description: Approved prompts must have been reviewed by a human
+    when: lifecycle.status == "approved"
+    assert: lifecycle.reviewedBy != null && lifecycle.reviewedBy.includes("human")
+
+  - id: approved_requires_approver
+    description: Approved prompts must declare who approved them
+    when: lifecycle.status == "approved"
+    assert: typeof lifecycle.approvedBy === "string" && lifecycle.approvedBy.length > 0
+
+  - id: deprecated_requires_supersedes
+    description: Deprecated prompts must reference a successor
+    when: lifecycle.status == "deprecated"
+    assert: typeof lifecycle.supersedes === "string" && lifecycle.supersedes.length > 0
+
+  - id: archived_not_executable
+    description: Archived prompts must not be executable
+    when: lifecycle.status == "archived"
+    assert: false
+
+  # ─────────────────────────────────────────────
+  # PromptClass-specific rigor
+  # ─────────────────────────────────────────────
+
+  - id: destructive_requires_constraints
+    description: Destructive prompts must define at least one constraint
+    when: promptClass == "destructive"
+    assert: Array.isArray(constraints) && constraints.length > 0
+
+  - id: destructive_requires_success_criteria
+    description: Destructive prompts must define success criteria
+    when: promptClass == "destructive"
+    assert: Array.isArray(successCriteria) && successCriteria.length > 0
+
+  - id: transformative_requires_success_criteria
+    description: Transformative prompts must define success criteria
+    when: promptClass == "transformative"
+    assert: Array.isArray(successCriteria) && successCriteria.length > 0
+
+  - id: trivial_should_be_concise
+    description: Trivial prompts should default to concise verbosity
+    when: promptClass == "trivial"
+    severity: warning
+    onFailure: continue
+    assert: verbosity == null || verbosity == "concise"
+
+  # ─────────────────────────────────────────────
+  # Context hygiene rules
+  # ─────────────────────────────────────────────
+
+  - id: context_references_are_paths
+    description: Context references must be valid relative paths
+    when: contextReferences != null && contextReferences.length > 0
+    assert: contextReferences.every(ref => typeof ref === "string" && !ref.startsWith("http"))
+
+  - id: no_inline_context_blobs
+    description: Context must not be embedded inline in the prompt
+    assert: context == null
+
+  # ─────────────────────────────────────────────
+  # Safety & policy alignment
+  # ─────────────────────────────────────────────
+
+  - id: reasoning_visibility_policy
+    description: Reasoning visibility must not be set to full for destructive prompts
+    when: promptClass == "destructive"
+    assert: reasoningVisibility != "full"
