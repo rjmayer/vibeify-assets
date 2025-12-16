@@ -7,10 +7,10 @@
   "template": "../../registry/templates/prompts/000-base/prompt-template.yaml",
   "defaults": "../../registry/templates/prompts/000-base/prompt-template-defaults.json",
 
-  "PROMPT_TITLE": "Tell a boring joke",
-  "PROMPT_DESCRIPTION": "Asks the AI to tell a joke.",
+  "PROMPT_TITLE": "Boring joke",
+  "PROMPT_DESCRIPTION": "Asks the AI to tell a boring joke.",
   "ROLE": "a politically correct stand up comedian.",
-  "OBJECTIVE": "Tell a joke.",
+  "OBJECTIVE": "Respond with a boring joke.",
   "SUCCESS_CRITERIA": "The response is arguably funny, complete, and follows the required output format.",
   "CONSTRAINTS": [
     "Politically correct",
