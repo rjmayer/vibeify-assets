@@ -1,108 +1,179 @@
-# ---------------------------------------------------------------------------
-# VIBEIFY PROMPT TEMPLATE
-# ---------------------------------------------------------------------------
+# ============================================================================
+# VIBEIFY PROMPT TEMPLATE — 000-base
+# ============================================================================
+# This file defines HOW prompts are rendered and WHAT inputs they accept.
+# It is the single source of truth for prompt structure and input contracts.
+# ============================================================================
+
 metadata:
+  templateId: "000-base"
   title: "{{PROMPT_TITLE}}"
-  version: "1.0"
-  description: "Structured multi-layer prompt template"
+  description: "{{PROMPT_DESCRIPTION}}"
+  version: "1.0.0"
+  createdAt: "{{TIMESTAMP}}"
   authors: []
   tags: []
-  created: "{{TIMESTAMP}}"
 
+# ----------------------------------------------------------------------------
+# SCHEMA REFERENCES (derived, not authoritative)
+# ----------------------------------------------------------------------------
+schemas:
+  input: "../../schemas/prompt-input.schema.v1.json"
+  output: "../../schemas/prompt-output.schema.v1.json"
 
-# ---------------------------------------------------------------------------
-# INPUT SCHEMA (for static validation and linting)
-# ---------------------------------------------------------------------------
-schema:
-  type: object
-  required:
-    - ROLE
-    - OBJECTIVE
-    - SUCCESS_CRITERIA
-    - CONTEXT
-  properties:
-    ROLE: { type: string }
-    OPERATING_PRINCIPLES:
-      oneOf:
-        - type: string
-        - type: array
-          items: { type: string }
-    REASONING_STYLE: { type: string }
-    REASONING_VISIBILITY: { type: string }
-    OBJECTIVE: { type: string }
-    SUCCESS_CRITERIA:
-      oneOf:
-        - type: string
-        - type: array
-          items: { type: string }
-    CONTEXT: { type: string }
-    CONTEXT_REFERENCES:
-      type: array
-      items: { type: string }
-    TASKS:
-      type: array
-      items: { type: string }
-    CONSTRAINTS:
-      type: array
-      items: { type: string }
-    PREFERENCES:
-      type: array
-      items: { type: string }
-    OUTPUT_SPEC: { type: string }
-    FORMATTING_RULES: { type: string }
-    OPTIONAL_BEHAVIOUR:
-      type: array
-      items: { type: string }
-    QUALITY_CHECKS:
-      type: array
-      items: { type: string }
-    STRICTNESS_LEVEL: { type: string }
-    TEMPERATURE_HINTS: { type: string }
-    DETERMINISM: { type: string }
-    FINAL_INSTRUCTION: { type: string }
-
-
-# ---------------------------------------------------------------------------
-# PLACEHOLDERS FOR RUNTIME INJECTION
-# ---------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
+# PLACEHOLDERS (AUTHORITATIVE INPUT CONTRACT)
+# ----------------------------------------------------------------------------
 placeholders:
-  PROMPT_TITLE: "{{PROMPT_TITLE}}"
-  TIMESTAMP: "{{TIMESTAMP}}"
-  ROLE: "{{TIMESTAMP}}"
-  OPERATING_PRINCIPLES: "{{OPERATING_PRINCIPLES}}"
-  REASONING_STYLE: "{{REASONING_STYLE}}"
-  REASONING_VISIBILITY: "{{REASONING_VISIBILITY}}"
-  OBJECTIVE: "{{OBJECTIVE}}"
-  SUCCESS_CRITERIA: "{{SUCCESS_CRITERIA}}"
-  CONTEXT: "{{CONTEXT}}"
-  CONTEXT_REFERENCES: "{{CONTEXT_REFERENCES}}"
-  TASKS: "{{TASKS}}"
-  CONSTRAINTS: "{{CONSTRAINTS}}"
-  PREFERENCES: "{{PREFERENCES}}"
-  OUTPUT_SPEC: "{{OUTPUT_SPEC}}"
-  FORMATTING_RULES: "{{FORMATTING_RULES}}"
-  OPTIONAL_BEHAVIOUR: "{{OPTIONAL_BEHAVIOUR}}"
-  QUALITY_CHECKS: "{{QUALITY_CHECKS}}"
-  STRICTNESS_LEVEL: "{{STRICTNESS_LEVEL}}"
-  TEMPERATURE_HINTS: "{{TEMPERATURE_HINTS}}"
-  DETERMINISM: "{{DETERMINISM}}"
-  FINAL_INSTRUCTION: "{{FINAL_INSTRUCTION}}"
 
+  PROMPT_TITLE:
+    type: string
+    required: true
+    description: "Human-readable title of the prompt."
 
-# ---------------------------------------------------------------------------
-# CONTEXT LAYER
-# ---------------------------------------------------------------------------
+  PROMPT_DESCRIPTION:
+    type: string
+    required: false
+    description: "Short description of what the prompt does."
+
+  TIMESTAMP:
+    type: string
+    format: date-time
+    required: true
+    description: "ISO timestamp injected at render time."
+
+  ROLE:
+    type: string
+    required: true
+    description: "Persona or operating role the model should adopt."
+
+  OPERATING_PRINCIPLES:
+    type: array
+    items: string
+    required: false
+    default: []
+    description: "Guiding principles that govern how the model should behave."
+
+  REASONING_STYLE:
+    type: string
+    required: false
+    default: "Analytical, stepwise reasoning."
+    description: "Expected reasoning approach."
+
+  REASONING_VISIBILITY:
+    type: string
+    required: false
+    default: "hidden"
+    description: "Whether the model should expose its reasoning."
+
+  OBJECTIVE:
+    type: string
+    required: true
+    description: "Primary goal the model must achieve."
+
+  SUCCESS_CRITERIA:
+    type: array
+    items: string
+    required: true
+    description: "Conditions that define when the response is considered correct."
+
+  CONTEXT:
+    type: string
+    required: false
+    default: ""
+    description: "Inline background or domain context."
+
+  CONTEXT_REFERENCES:
+    type: array
+    items: string
+    required: false
+    default: []
+    description: "Relative paths to external context files."
+
+  TASKS:
+    type: array
+    items: string
+    required: false
+    default: []
+    description: "Explicit steps or tasks the model should perform."
+
+  CONSTRAINTS:
+    type: array
+    items: string
+    required: false
+    default: []
+    description: "Hard rules the model must follow."
+
+  PREFERENCES:
+    type: array
+    items: string
+    required: false
+    default: []
+    description: "Soft preferences or stylistic guidance."
+
+  OUTPUT_SPEC:
+    type: string
+    required: true
+    description: "Description of the required output structure."
+
+  FORMATTING_RULES:
+    type: string
+    required: false
+    default: ""
+    description: "Formatting rules the output must follow."
+
+  OPTIONAL_BEHAVIOUR:
+    type: array
+    items: string
+    required: false
+    default: []
+    description: "Optional enhancements or non-critical behaviours."
+
+  QUALITY_CHECKS:
+    type: array
+    items: string
+    required: false
+    default: []
+    description: "Checks the model should mentally perform before finalising output."
+
+  FINAL_INSTRUCTION:
+    type: string
+    required: true
+    description: "Final imperative instruction to trigger execution."
+
+  STRICTNESS_LEVEL:
+    type: string
+    required: false
+    default: "medium"
+    description: "Execution strictness hint for the backend."
+
+  TEMPERATURE_HINTS:
+    type: string
+    required: false
+    default: "balanced"
+    description: "Creativity / temperature guidance."
+
+  DETERMINISM:
+    type: string
+    required: false
+    default: "aim for repeatable outputs"
+    description: "Determinism expectations."
+
+# ----------------------------------------------------------------------------
+# CONTEXT RESOLUTION
+# ----------------------------------------------------------------------------
 context:
-  text: "{{CONTEXT}}"
+  inline: "{{CONTEXT}}"
   files: "{{CONTEXT_REFERENCES}}"
 
-
-# ---------------------------------------------------------------------------
-# PROMPT TEMPLATE BODY
-# ---------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
+# PROMPT BODY
+# ----------------------------------------------------------------------------
 template:
 
   instruction_layer: |
+    ## Instruction Layer (What the model is)
+
     **Role:**  
     You are {{ROLE}}
 
@@ -116,53 +187,65 @@ template:
     {{REASONING_VISIBILITY}}
 
   goal_layer: |
-    **Primary Objective:** 
-    Your goal is to {{OBJECTIVE}}
+    ## Goal Layer (What the model must achieve)
 
-    **Success Criteria**
+    **Primary Objective:**  
+    {{OBJECTIVE}}
+
+    **Success Criteria:**  
     {{SUCCESS_CRITERIA}}
 
   context_layer: |
-    **Context:**
+    ## Context Layer (What the model must know)
+
     {{CONTEXT}}
 
-    External sources:
+    **External Context References:**  
     {{CONTEXT_REFERENCES}}
 
   task_layer: |
-    **Tasks:**
+    ## Task Layer (What the model must do)
+
+    **Tasks**
     {{TASKS}}
 
   constraint_layer: |
-    **Hard Constraints:**
+    ## Constraint Layer (Rules the model must follow)
+
+    **Hard Constraints:**  
     {{CONSTRAINTS}}
 
-    ### Soft Constraints:
+    **Preferences:**  
     {{PREFERENCES}}
 
   output_layer: |
     ## Output Layer (What the model must return)
 
-    **Required Structure:**  
+    **Required Output:**  
     {{OUTPUT_SPEC}}
 
     **Formatting Rules:**  
     {{FORMATTING_RULES}}
 
   enhancement_layer: |
-    ## Enhancement Layer (Optional)
+    ## Enhancement Layer (Optional Guidance)
+
+    **Optional Behaviour**
     {{OPTIONAL_BEHAVIOUR}}
+
+    **Quality Checks:**  
     {{QUALITY_CHECKS}}
 
   execution_layer: |
     ## Execution Layer (Final Instruction)
+
+    **Final Instruction"
     {{FINAL_INSTRUCTION}}
 
-
-# ---------------------------------------------------------------------------
-# DEVELOPER CONTROLS
-# ---------------------------------------------------------------------------
+# ----------------------------------------------------------------------------
+# DEVELOPER / EXECUTION CONTROLS (NON-RENDERED)
+# ----------------------------------------------------------------------------
 developer_controls:
-  strictness_level: "{{STRICTNESS_LEVEL}}"
-  temperature: "{{TEMPERATURE_HINTS}}"
+  strictnessLevel: "{{STRICTNESS_LEVEL}}"
+  temperatureHints: "{{TEMPERATURE_HINTS}}"
   determinism: "{{DETERMINISM}}"

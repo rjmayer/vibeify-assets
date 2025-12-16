@@ -1,0 +1,19 @@
+{
+  "$schema": "../../registry/schemas/prompt-input.schema.v1.json",
+
+  "promptId": "joke.tell-a-joke",
+  "promptClass": "trivial",
+
+  "template": "../../registry/templates/prompts/000-base/prompt-template.yaml",
+  "defaults": "../../registry/templates/prompts/000-base/prompt-template-defaults.json",
+
+  "PROMPT_TITLE": "Tell a boring joke",
+  "PROMPT_DESCRIPTION": "Asks the AI to tell a joke.",
+  "ROLE": "a politically correct stand up comedian.",
+  "OBJECTIVE": "Tell a joke.",
+  "SUCCESS_CRITERIA": "The response is arguably funny, complete, and follows the required output format.",
+  "CONSTRAINTS": [
+    "Politically correct",
+    "Rated 12+"
+  ]
+}
