@@ -133,5 +133,3 @@ After integrating all layers above, execute the following command:
 - Strictness level: {{STRICTNESS_LEVEL}}
 - Temperature or creativity controls (if relevant): {{TEMPERATURE_HINTS}}
 - Determinism notes: {{DETERMINISM}}
-
-> Just a test.. this is safe to remove

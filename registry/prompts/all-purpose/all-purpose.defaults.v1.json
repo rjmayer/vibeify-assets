@@ -1,4 +1,6 @@
 {
+  "$schema": "https://vibeify.dev/schemas/all-purpose-input.schema.v1.json",
+
   "PROMPT_TITLE": null,
   "PROMPT_DESCRIPTION": null,
 

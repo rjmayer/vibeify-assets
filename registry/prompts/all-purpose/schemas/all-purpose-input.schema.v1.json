@@ -1,0 +1,153 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://vibeify.dev/schemas/all-purpose-input.schema.v1.json",
+  "title": "Vibeify Prompt Input Schema v1",
+  "description": "Validates the input variables required to render a prompt instance from a prompt template.",
+  "type": "object",
+
+  "required": [
+    "PROMPT_TITLE",
+    "ROLE",
+    "OBJECTIVE",
+    "SUCCESS_CRITERIA",
+    "OUTPUT_SPEC",
+    "FINAL_INSTRUCTION"
+  ],
+
+  "properties": {
+    "PROMPT_TITLE": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable title of the prompt."
+    },
+
+    "PROMPT_DESCRIPTION": {
+      "type": "string",
+      "description": "Optional short description of what the prompt does."
+    },
+
+    "ROLE": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Persona or operating role the model should adopt."
+    },
+
+    "OPERATING_PRINCIPLES": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "default": [],
+      "description": "Guiding principles governing model behaviour."
+    },
+
+    "REASONING_STYLE": {
+      "type": "string",
+      "default": "Analytical, stepwise reasoning.",
+      "description": "Expected reasoning approach."
+    },
+
+    "REASONING_VISIBILITY": {
+      "type": "string",
+      "enum": ["hidden", "summary", "full"],
+      "default": "hidden",
+      "description": "Whether the model should expose its reasoning."
+    },
+
+    "OBJECTIVE": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Primary goal the model must achieve."
+    },
+
+    "SUCCESS_CRITERIA": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "description": "Conditions that define when the response is considered correct."
+    },
+
+    "CONTEXT": {
+      "type": "string",
+      "default": "",
+      "description": "Inline background or domain context."
+    },
+
+    "CONTEXT_REFERENCES": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "default": [],
+      "description": "Paths to external context files."
+    },
+
+    "TASKS": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "default": [],
+      "description": "Explicit tasks the model should perform."
+    },
+
+    "CONSTRAINTS": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "default": [],
+      "description": "Hard rules the model must follow."
+    },
+
+    "PREFERENCES": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "default": [],
+      "description": "Soft preferences or stylistic guidance."
+    },
+
+    "OUTPUT_SPEC": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Required output structure and content."
+    },
+
+    "FORMATTING_RULES": {
+      "type": "string",
+      "default": "",
+      "description": "Formatting and markup rules."
+    },
+
+    "OPTIONAL_BEHAVIOUR": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "default": [],
+      "description": "Optional enhancements or non-critical behaviours."
+    },
+
+    "QUALITY_CHECKS": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "default": [],
+      "description": "Checks the model should perform before finalising output."
+    },
+
+    "FINAL_INSTRUCTION": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Final imperative instruction to trigger execution."
+    },
+
+    "STRICTNESS_LEVEL": {
+      "type": "string",
+      "default": "medium",
+      "description": "Execution strictness hint."
+    },
+
+    "TEMPERATURE_HINTS": {
+      "type": "string",
+      "default": "balanced",
+      "description": "Creativity / temperature guidance."
+    },
+
+    "DETERMINISM": {
+      "type": "string",
+      "default": "aim for repeatable outputs",
+      "description": "Determinism expectations."
+    }
+  },
+
+  "additionalProperties": false
+}
