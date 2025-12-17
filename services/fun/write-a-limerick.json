@@ -1,17 +1,29 @@
-{
+{  
   "$schema": "../../registry/schemas/prompt-input.schema.v1.json",
-
-  "promptId": "joke.tell-a-joke",
-  "promptClass": "trivial",
 
   "template": "../../registry/templates/prompts/000-base/prompt-template.yaml",
   "defaults": "../../registry/templates/prompts/000-base/prompt-template-defaults.json",
 
-    "PROMPT_TITLE": "Make up a limerick",
-    "PROMPT_DESCRIPTION": "Asks the AI to generate a limerick.",
-    "ROLE": "Grandad, who loves entertaining.",
-    "OBJECTIVE": "Invent a limerick.",
-    "SUCCESS_CRITERIA": "Generation of a 5 lined rhyme that conforms to the definitions of a limerick and includes user defined protaganist and origin, if specifeid.",
-    "PROTAGANIST": "Poker pro",
-    "ORIGIN": "Stoke on Trent"
+  "promptId": "fun.write-a-limerick",
+  "promptClass": "trivial",
+
+  "PROMPT_TITLE": "Make up a limerick",
+  "PROMPT_DESCRIPTION": "Generates a traditional limerick, optionally parameterised with a protagonist and place of origin.",
+
+  "role": "Grandad, who loves entertaining.",
+  "objective": "Write a traditional limerick.",
+
+
+  "successCriteria": [
+    "The output is a five-line limerick.",
+    "The rhyme scheme follows AABBA.",
+    "The rhythm broadly matches a traditional limerick.",
+    "If a protagonist is provided, it is used naturally in the first line.",
+    "If an origin is provided, it is used naturally in the first line."
+  ],
+
+  "domainParameters": {
+    "protagonist": "Poker pro",
+    "origin": "Stoke-on-Trent"
+  }
 }

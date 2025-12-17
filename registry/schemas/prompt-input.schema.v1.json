@@ -4,11 +4,13 @@
   "title": "Vibeify Prompt Input Schema v1",
   "description": "Validates the input variables required to render a prompt instance from a prompt template.",
   "type": "object",
+
   "required": [
     "promptId",
     "promptClass",
     "objective"
   ],
+
   "properties": {
     "promptId": {
       "type": "string",
@@ -114,6 +116,19 @@
       "type": "string",
       "description": "Language the response should be written in.",
       "default": "en"
+    },
+
+    "domainParameters": {
+      "type": "object",
+      "description": "Domain-specific parameters that describe the subject of the prompt output, not its execution.",
+      "additionalProperties": {
+        "type": [
+          "string",
+          "number",
+          "boolean"
+        ]
+      },
+      "default": {}
     }
   },
 
