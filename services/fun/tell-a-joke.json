@@ -1,11 +1,10 @@
 {
   "$schema": "../../registry/schemas/prompt-input.schema.v1.json",
+  "template": "../../registry/templates/prompts/000-base/prompt-template.yaml",
+  "defaults": "../../registry/templates/prompts/000-base/prompt-template-defaults.json",
 
   "promptId": "joke.tell-a-joke",
   "promptClass": "trivial",
-
-  "template": "../../registry/templates/prompts/000-base/prompt-template.yaml",
-  "defaults": "../../registry/templates/prompts/000-base/prompt-template-defaults.json",
 
   "PROMPT_TITLE": "Boring joke",
   "PROMPT_DESCRIPTION": "Asks the AI to tell a boring joke.",

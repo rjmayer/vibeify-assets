@@ -13,7 +13,6 @@
   "role": "Grandad, who loves entertaining.",
   "objective": "Write a traditional limerick.",
 
-
   "successCriteria": [
     "The output is a five-line limerick.",
     "The rhyme scheme follows AABBA.",
