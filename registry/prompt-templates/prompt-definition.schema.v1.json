@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://vibeify.dev/schemas/prompt-definition.schema.v1.json",
+  "title": "Vibeify Prompt Definition Schema v1",
+  "description": "Defines a prompt definition that binds a template to content inputs. Execution metadata, lifecycle, model configuration, and governance are explicitly excluded.",
+  "type": "object",
+
+  "required": [
+    "templateRef",
+    "input"
+  ],
+
+  "properties": {
+    "templateRef": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Path or identifier of the prompt template used to render this definition."
+    },
+
+    "defaultsRef": {
+      "type": "string",
+      "description": "Optional reference to a defaults file providing baseline values for optional placeholders."
+    },
+
+    "input": {
+      "type": "object",
+      "description": "Content inputs for the template. This object is validated separately against the input schema derived from the referenced template."
+    }
+  },
+
+  "additionalProperties": false
+}
