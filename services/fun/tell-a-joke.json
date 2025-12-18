@@ -1,20 +1,17 @@
 {
-  "$schema": "https://vibeify.dev/schemas/all-purpose-input.schema.v1.json",
-  "template": "../../registry/prompt-templates/all-purpose/all-purpose.template.yaml",
-  "defaults": "../../registry/prompt-templates/all-purpose/all-purpose.defaults.v1.json",
-
-  "promptId": "fun.tell-a-joke",
-  "promptClass": "trivial",
-
-  "PROMPT_TITLE": "Boring joke",
-  "PROMPT_DESCRIPTION": "Asks the AI to tell a boring joke.",
-  "ROLE": "a politically correct stand up comedian.",
-  "OBJECTIVE": "Respond with a boring joke.",
-  "SUCCESS_CRITERIA": [
-  	"The response is arguably funny, complete, and follows the required output format."
-  ],
-  "CONSTRAINTS": [
-    "Politically correct",
-    "Rated 12+"
-  ]
+  "templateRef": "../../registry/prompt-templates/all-purpose/all-purpose.template.yaml",
+  "defaultsRef": "../../registry/prompt-templates/all-purpose/all-purpose.defaults.v1.json",
+  "input": {
+    "PROMPT_TITLE": "Boring joke",
+    "PROMPT_DESCRIPTION": "Asks the AI to tell a boring joke.",
+    "ROLE": "a politically correct stand up comedian.",
+    "OBJECTIVE": "Respond with a boring joke.",
+    "SUCCESS_CRITERIA": [
+      "The response is arguably funny, complete, and follows the required output format."
+    ],
+    "CONSTRAINTS": [
+      "Politically correct",
+      "Rated 12+"
+    ]
+  }
 }
