@@ -23,18 +23,28 @@ Vibeify automatically generates a **prompt input schema** from the YAML template
 5. Set `additionalProperties: false` to forbid undeclared keys.
 6. Wrap the result with standard JSON Schema fields (`$schema`, `title`, etc.).
 
-The resulting schema (for example, `all‑purpose-input.schema.v1.json`) ensures that any prompt definition supplies the necessary content variables and uses the correct types.  Renderer-injected fields like `TIMESTAMP` are excluded because they are supplied automatically at runtime.
+The resulting schema (for example, `all-purpose-input.schema.v1.json`) ensures that any prompt definition supplies the necessary content variables and uses the correct types.  Renderer-injected fields like `TIMESTAMP` are excluded because they are supplied automatically at runtime.
 
 ### 1.3 Defaults
 
-Defaults (`all‑purpose.defaults.v1.json`) provide opinionated starting values for optional placeholders.  They are not part of the schema; defaults are merged with user-provided inputs before validation.  Defaults encode your organisation’s preferred operating principles, reasoning styles, or other preferences, but they never introduce new keys or satisfy required fields.
+Defaults (`all-purpose.defaults.v1.json`) provide opinionated starting values for optional placeholders.  They are not part of the schema; defaults are merged with user-provided inputs before validation.  Defaults encode your organisation’s preferred operating principles, reasoning styles, or other preferences, but they never introduce new keys or satisfy required fields.
 
 ### 1.4 Prompt Definitions
 
-A **prompt definition** ties together a template, an optional defaults file, and a concrete `input` object.  It does not include execution metadata.  The definition looks like this:
+A **prompt definition** ties together a template, an optional defaults file, and a concrete `input` object.  
+**It is a content-only artifact. Only three keys are permitted:**
+
+- `templateRef` – identifies which template to use.
+- `defaultsRef` – optionally points at a defaults file to merge before validation.
+- `input` – provides the concrete values for each required placeholder.
+
+Any field other than these three is invalid and will be rejected by schema validation.  
+In particular, a prompt definition **must not** include model configuration, execution hints, output schemas, assertions, tests, or lifecycle or governance metadata; those belong in the execution envelope.
+
+The definition looks like this:
 
 ```yaml
-templateRef: registry/templates/all-purpose/prompt-template.yaml
+templateRef: registry/templates/all-purpose/all-purpose.template.v1.yaml
 defaultsRef: registry/templates/all-purpose/all-purpose.defaults.v1.json
 input:
   OBJECTIVE: "Tell a joke"
@@ -44,19 +54,41 @@ input:
     - "The response follows the required output format"
 ```
 
+**Prompt definitions are validated before defaults are merged and before linting or execution.**
 During rendering, Vibeify loads the template, merges defaults and input (with user input taking precedence), validates the merged object against the derived input schema, and produces a fully rendered prompt.
+
+#### Explicitly Forbidden in Definitions
+
+For clarity, the following elements **must never** appear in a prompt definition:
+
+* **Model configuration and execution hints** – settings like model name, temperature, max tokens.
+* **Output schemas or format expectations** – these are part of the output envelope and assertions.
+* **Assertions or tests** – runtime assertions live in separate assertion files; tests belong in the CI layer.
+* **Lifecycle or governance metadata** – fields like `promptId`, `promptClass`, `lifecycle` must appear only in the execution envelope.
+* **Inline context blobs** – context must always be referenced via relative file paths in the envelope.
 
 ### 1.5 Execution Envelope
 
 When a prompt definition is executed, it is wrapped in an **execution envelope**.  The envelope extends the definition with metadata required for governance and observability:
 
-- `promptId` – a stable identifier for the prompt version being run.
-- `promptClass` – a classification that indicates the risk or behaviour category (e.g. trivial, conversational, generative, transformative, destructive).
-- `lifecycle` – governance state information (see Section 2 below).
-- `execution` settings – such as model name, temperature, run identifier, and timestamp.
-- The validated `input` object derived from the template.
+* `promptId` – a stable identifier for the prompt version being run.
+* `promptClass` – a classification that indicates the risk or behaviour category (e.g. trivial, conversational, generative, transformative, destructive).
+* `lifecycle` – governance state information (see Section 2 below).
+* `execution` settings – such as model name, temperature, run identifier, and timestamp.
+* The validated `input` object derived from the template.
 
 The envelope exists so that content and governance can evolve independently.  The renderer sees only the input; the runner and CI see the full envelope.
+
+### 1.6 Key Terminology
+
+To avoid confusion, Vibeify uses the following terms precisely:
+
+| Term                   | Meaning                                                                                                                                                                                                                                             |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Prompt Definition**  | A static, versioned content artifact containing only `templateRef`, `defaultsRef`, and `input`. It is validated against the derived input schema **before** defaults are merged and **before** any linting or execution occurs.                     |
+| **Execution Envelope** | A runtime wrapper around a prompt definition that adds `promptId`, `promptClass`, lifecycle metadata, execution settings, and the validated input. This is the object the runner executes and that linting operates on.                             |
+| **Prompt Execution**   | A single run of an execution envelope. The runner sends the rendered prompt to the LLM and collects the raw output.                                                                                                                                 |
+| **Output Envelope**    | The result of a prompt execution, containing `promptId`, `promptClass`, `status`, the model output, and optional warnings, errors, and metadata. It is validated against `prompt-output.schema.v1.json` and subjected to class-specific assertions. |
 
 ## 2. Lifecycle and Governance
 
@@ -135,7 +167,7 @@ Linting runs both locally and in CI.  Errors prevent execution; warnings do not 
 
 | File                                     | Purpose |
 |------------------------------------------|---------|
-| `prompt-template.yaml`                   | Defines placeholders and structure of the prompt text. |
+| `all-purpose-template.yaml`              | Defines placeholders and structure of the prompt text. |
 | `all-purpose-input.schema.v1.json`       | Derived from the template; validates the content input. |
 | `all-purpose.defaults.v1.json`           | Provides opinionated starting values for optional placeholders. |
 | `prompt-lifecycle.schema.v1.json`        | Validates lifecycle metadata in the envelope. |
