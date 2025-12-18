@@ -1,22 +1,22 @@
-Perfect. This is the **enforcement layer** that makes everything you’ve defined *real*.
+Prompt linting is the **static enforcement layer** that runs before execution. It checks the *execution envelope*—a combination of the prompt definition, its input, and associated metadata (including lifecycle and promptClass)—to catch problems early.
 
-Below is a **canonical `prompt-lint.rules.v1.yaml`**, aligned exactly with the schemas you’ve already locked in. It is intentionally strict, explicit, and boring — because boring lint rules scale.
+Below you’ll find a **canonical `prompt-lint.rules.v1.yaml`**, aligned exactly with the schemas you’ve locked in. The rules are deliberately explicit and unmagical: boring lint rules scale.
 
-I’ll give you:
+This document covers:
 
 1. **What linting does (and does not do)**
 2. **Canonical `prompt-lint.rules.v1.yaml`**
-3. **Rule categories & intent**
-4. **How this plugs into CLI + CI**
-5. **Why this won’t paint you into a corner**
+3. **Rule categories & their intent**
+4. **How linting plugs into CLI and CI**
+5. **Why these rules won’t paint you into a corner**
 
 ---
 
 ## 1. What prompt linting is (precise definition)
 
-Prompt linting is **static analysis** of prompt artifacts *before execution*.
+Prompt linting performs a **static analysis** of the *execution envelope* before any LLM call happens. The envelope includes the prompt’s input object (content), lifecycle metadata, promptClass, and any other configuration that the runner will consume.
 
-It answers questions like:
+Linting answers questions like:
 
 * Is this prompt complete?
 * Is it safe to run?
@@ -44,7 +44,8 @@ description: >
 
 engine:
   language: js-expression
-  context: prompt-input-and-metadata
+  # The evaluation context is the execution envelope, not just the input.
+  context: prompt-envelope
 
 defaults:
   severity: error

@@ -10,7 +10,7 @@ This is the missing **glue layer** between *schemas* and *CI*, and it’s exactl
 
 ## 1. What this file *is*
 
-`prompt-output.assertions.v1.yaml` defines **machine-evaluable rules** that determine whether an LLM execution is:
+`prompt-output.assertions.v1.yaml` defines **machine‑evaluable rules** that determine whether an LLM execution is acceptable. These rules operate on the **output envelope**—the structured wrapper around raw LLM output—rather than on the text itself. The envelope is the thing produced by the runner after it wraps, validates, and annotates raw output.
 
 * acceptable
 * degraded-but-usable

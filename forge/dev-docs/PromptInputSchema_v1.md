@@ -1,316 +1,110 @@
-Below is a **canonical `PromptInputSchema v1`**, deliberately opinionated, minimal, and extensible. It is **not** trying to encode prompt structure or domain knowledge — only *what must exist for a prompt instance to be valid before rendering*.
+# Prompt Input Schema v1
 
-I’ll give you:
+This schema defines the allowed **input object** used to render a prompt template.  
+It validates only the **content** portion of a prompt definition.  
+Execution metadata, identifiers, and lifecycle state are handled in the prompt envelope and **must not appear here**.
 
-1. **Design principles (short, important)**
-2. **The actual schema (JSON Schema, draft-07 compatible)**
-3. **Field-by-field rationale**
-4. **Explicit non-goals (to prevent future misuse)**
+## Design principles
 
----
+- **Validate inputs, not behaviour** – Only ensure that required fields exist and types are correct.
+- **Derived from the template** – The schema is generated from placeholder metadata in the template; it is not hand‑written.
+- **Use SCREAMING_SNAKE_CASE** for all placeholder keys.
+- **Exclude renderer‑injected placeholders** – Values like `TIMESTAMP` are injected by the runtime and therefore omitted from the required list.
+- **Backend‑agnostic** – The schema does not assume any specific LLM or platform behaviour.
 
-# 1. Design principles (lock these in)
+## Canonical schema
 
-**PromptInputSchema v1 MUST:**
-
-* Validate **inputs**, not behaviour
-* Be **template-agnostic**
-* Be **LLM-backend-agnostic**
-* Support **trivial → destructive** prompts
-* Stay stable for a long time
-
-**PromptInputSchema v1 MUST NOT:**
-
-* Encode prompt layers (Instruction/Goal/etc.)
-* Encode domain schemas (DB, API, business logic)
-* Encode output structure
-* Encode lifecycle or execution metadata
-
-If you violate these later, you should bump the version.
-
----
-
-# 2. Canonical PromptInputSchema v1
+The following JSON Schema (Draft 07) represents `all‑purpose-input.schema.v1.json`:
 
 ```json
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://vibeify.dev/schemas/prompt-input.schema.v1.json",
-  "title": "Vibeify Prompt Input Schema v1",
-  "description": "Validates the input variables required to render a prompt instance from a prompt template.",
+  "$id": "https://vibeify.dev/schemas/all-purpose-input.schema.v1.json",
+  "title": "Vibeify All‑Purpose Prompt Input Schema v1",
+  "description": "Validates the input variables required to render a prompt instance from the all‑purpose prompt template.",
   "type": "object",
   "required": [
-    "promptId",
-    "promptClass",
-    "objective"
+    "PROMPT_TITLE",
+    "ROLE",
+    "OBJECTIVE",
+    "SUCCESS_CRITERIA",
+    "OUTPUT_SPEC",
+    "FINAL_INSTRUCTION"
   ],
   "properties": {
-    "promptId": {
+    "PROMPT_TITLE": { "type": "string", "minLength": 1 },
+    "PROMPT_DESCRIPTION": { "type": "string" },
+    "ROLE": { "type": "string", "minLength": 1 },
+    "OPERATING_PRINCIPLES": { "type": "array", "items": { "type": "string" }, "default": [] },
+    "REASONING_STYLE": { "type": "string", "default": "Analytical, stepwise reasoning." },
+    "REASONING_VISIBILITY": {
       "type": "string",
-      "description": "Unique identifier for this prompt instance (stable across executions).",
-      "minLength": 1
-    },
-
-    "promptClass": {
-      "type": "string",
-      "description": "Semantic class of the prompt, used to drive linting, policy, and execution rules.",
-      "enum": [
-        "trivial",
-        "conversational",
-        "generative",
-        "transformative",
-        "destructive"
-      ]
-    },
-
-    "objective": {
-      "type": "string",
-      "description": "The primary goal the model must achieve. This is always mandatory.",
-      "minLength": 1
-    },
-
-    "role": {
-      "type": "string",
-      "description": "Persona or operating role the model should adopt.",
-      "default": "A helpful and knowledgeable AI assistant"
-    },
-
-    "constraints": {
-      "type": "array",
-      "description": "Hard rules the model must follow.",
-      "items": {
-        "type": "string",
-        "minLength": 1
-      },
-      "default": []
-    },
-
-    "successCriteria": {
-      "type": "array",
-      "description": "Conditions that define when the response is considered correct.",
-      "items": {
-        "type": "string",
-        "minLength": 1
-      },
-      "default": []
-    },
-
-    "contextReferences": {
-      "type": "array",
-      "description": "Paths or identifiers of external context files to be injected into the prompt.",
-      "items": {
-        "type": "string",
-        "minLength": 1
-      },
-      "default": []
-    },
-
-    "outputFormat": {
-      "type": "string",
-      "description": "Declared format of the expected output.",
-      "enum": [
-        "markdown",
-        "json",
-        "code",
-        "text"
-      ],
-      "default": "markdown"
-    },
-
-    "reasoningVisibility": {
-      "type": "string",
-      "description": "Controls whether the model should expose its reasoning.",
-      "enum": [
-        "hidden",
-        "summary",
-        "full"
-      ],
+      "enum": ["hidden","summary","full"],
       "default": "hidden"
     },
-
-    "tone": {
-      "type": "string",
-      "description": "Desired tone of the response.",
-      "default": "neutral"
+    "OBJECTIVE": { "type": "string", "minLength": 1 },
+    "SUCCESS_CRITERIA": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Conditions that define when the response is correct."
     },
-
-    "verbosity": {
-      "type": "string",
-      "description": "Desired verbosity level of the response.",
-      "enum": [
-        "concise",
-        "balanced",
-        "verbose"
-      ],
-      "default": "balanced"
+    "CONTEXT": { "type": "string", "default": "" },
+    "CONTEXT_REFERENCES": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
     },
-
-    "language": {
-      "type": "string",
-      "description": "Language the response should be written in.",
-      "default": "en"
-    }
+    "TASKS": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "CONSTRAINTS": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "PREFERENCES": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "OUTPUT_SPEC": { "type": "string", "minLength": 1 },
+    "FORMATTING_RULES": { "type": "string", "default": "" },
+    "OPTIONAL_BEHAVIOUR": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "QUALITY_CHECKS": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "FINAL_INSTRUCTION": { "type": "string", "minLength": 1 },
+    "STRICTNESS_LEVEL": { "type": "string", "default": "medium" },
+    "TEMPERATURE_HINTS": { "type": "string", "default": "balanced" },
+    "DETERMINISM": { "type": "string", "default": "aim for repeatable outputs" }
   },
-
   "additionalProperties": false
 }
 ```
 
-This is intentionally boring — boring here is *good*.
+Only placeholders defined in the template appear in this schema. Values omitted in a prompt definition may be supplied via defaults.
 
----
+## Field rationale
 
-# 3. Field-by-field rationale (why each exists)
+- **Required fields** (`PROMPT_TITLE`, `ROLE`, `OBJECTIVE`, `SUCCESS_CRITERIA`, `OUTPUT_SPEC`, `FINAL_INSTRUCTION`) form the minimal contract for a meaningful prompt.
+- **Optional fields** such as `OPERATING_PRINCIPLES` and `REASONING_STYLE` provide additional context but are not mandatory.
+- Arrays (`OPERATING_PRINCIPLES`, `CONTEXT_REFERENCES`, `TASKS`, `CONSTRAINTS`, `PREFERENCES`, `OPTIONAL_BEHAVIOUR`, `QUALITY_CHECKS`) default to empty arrays.
+- Renderer‑injected fields like `TIMESTAMP` are excluded from this schema; they are provided by the runtime, not the prompt author.
 
-### `promptId` (required)
+## Non‑goals
 
-* Identity anchor for:
+This schema does **not** encode:
 
-  * audit trails
-  * registry indexing
-  * CI references
-* Must be stable across executions
+- Execution metadata (`promptId`, `promptClass`, lifecycle state).
+- Output structure or correctness.
+- Domain or business logic.
 
----
-
-### `promptClass` (required)
-
-This is the **most important field after `objective`**.
-
-It unlocks:
-
-* class-specific lint rules
-* different CI strictness
-* future execution safeguards
-
-Without this, all prompts become “equal”, which is false.
-
----
-
-### `objective` (required)
-
-You already spotted this earlier — you were right.
-
-If this is missing:
-
-* the prompt is meaningless
-* the schema should fail hard
-
----
-
-### `role`
-
-Defaults are fine here.
-This is a **soft default**, not policy.
-
----
-
-### `constraints`
-
-These are **hard instructions**, not preferences.
-
-Linting can later:
-
-* flag vague constraints
-* enforce minimum constraints for destructive prompts
-
----
-
-### `successCriteria`
-
-This is gold for:
-
-* prompt tests
-* regression detection
-* CI assertions
-
-You’ll thank yourself later for making this first-class.
-
----
-
-### `contextReferences`
-
-Crucially:
-
-* references only
-* not embedded content
-
-This keeps prompt input clean and composable.
-
----
-
-### `outputFormat`
-
-This is *not* the output schema.
-
-It’s just a **declaration** that downstream tooling can react to.
-
----
-
-### `reasoningVisibility`
-
-You already intuitively separated this earlier.
-
-This field:
-
-* enables policy defaults
-* allows enterprise-safe enforcement
-
----
-
-### `tone`, `verbosity`, `language`
-
-These are deliberately **soft control knobs**:
-
-* easy to override
-* easy to ignore by stricter prompt classes
-
----
-
-# 4. Explicit non-goals (write these down somewhere)
-
-PromptInputSchema v1 **does NOT**:
-
-* Define prompt layout
-* Enforce Instruction/Goal/Context sections
-* Validate model output
-* Encode execution settings (model, temperature, tokens)
-* Encode lifecycle state
-* Encode Jira or ticket metadata
-
-Those are all **different schemas**.
-
----
-
-# 5. How this fits your “tell a joke” example
-
-Your joke prompt would pass with:
-
-```json
-{
-  "promptId": "example.tell-joke.v1",
-  "promptClass": "trivial",
-  "objective": "Tell a joke",
-  "outputFormat": "text"
-}
-```
-
-Everything else is defaults — which is *exactly* what you want.
-
----
-
-## Final sanity check
-
-If you freeze **this** as v1 and promise yourself:
-
-> “Any new need requires a new schema, not mutation of this one”
-
-…then you’ve laid a genuinely professional foundation.
-
-If you want next:
-
-* `PromptOutputSchema v1`
-* `PromptLifecycleMetadata v1`
-* or a **lint ruleset keyed off `promptClass`**
-
-Say the word.
+Those concerns are handled by separate schemas and artefacts.

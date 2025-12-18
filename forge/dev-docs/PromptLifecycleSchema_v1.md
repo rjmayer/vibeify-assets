@@ -1,36 +1,28 @@
-Excellent. This completes the **core contract triangle** (input → output → lifecycle). Once this exists, vibeify stops being “prompt tooling” and becomes a **governed system**.
+Prompts in vibeify carry lifecycle metadata to control when they may be run, trusted, or evolved. Lifecycle sits in the execution envelope—not in the prompt template or the input schema—and it governs behaviour across local runs, CI pipelines, and registries.
 
-I’ll give you:
+This document explains:
 
-1. **What lifecycle means in vibeify (precise, not fluffy)**
-2. **Canonical `prompt-lifecycle.schema.v1.json`**
-3. **State semantics (what each status *actually* allows)**
-4. **How lifecycle interacts with CI, CLI, and humans**
-5. **What is deliberately *not* in v1**
+1. Why lifecycle exists and how it differs from workflows or ticketing.
+2. The canonical `prompt-lifecycle.schema.v1.json` used to validate lifecycle metadata.
+3. What each lifecycle status means in practice.
+4. How lifecycle is enforced by the CLI and CI.
+5. What is intentionally out of scope for v1.
 
----
+## 1. Purpose of lifecycle (governance vs workflow)
 
-## 1. What “lifecycle” means here (tight definition)
+Lifecycle answers three questions about a prompt definition:
 
-In vibeify, lifecycle metadata answers exactly three questions:
+- **Can this prompt be executed?** In other words, should the runner allow execution in local or CI contexts?
+- **Can its output be trusted?** Are the results eligible to be promoted into registries or consumed by downstream systems?
+- **Can this definition evolve?** Are edits allowed without bumping versions?
 
-1. **Can this prompt be executed?**
-2. **Can its output be trusted / promoted?**
-3. **Is this prompt safe to evolve further?**
+It is attached to the *execution envelope*. The renderer and the input schema know nothing about lifecycle. Lifecycle metadata enforces governance around using a prompt; it is not a workflow engine, a ticket system, or a release process.
 
-It is **not**:
+Think of lifecycle as akin to branch protection rules for prompts.
 
-* workflow automation
-* ticket tracking
-* release management
+## 2. Canonical schema (validation contract)
 
-Think: *Git branch protection rules, but for prompts*.
-
----
-
-## 2. Canonical `prompt-lifecycle.schema.v1.json`
-
-This schema is intentionally **small, strict, and boring**.
+The lifecycle object is validated by a dedicated JSON Schema. This schema is small, strict, and versioned independently of the input schema.
 
 ```json
 {
@@ -54,7 +46,6 @@ This schema is intentionally **small, strict, and boring**.
         "archived"
       ]
     },
-
     "reviewedBy": {
       "type": "array",
       "description": "Actors who have reviewed this prompt.",
@@ -67,30 +58,25 @@ This schema is intentionally **small, strict, and boring**.
       },
       "default": []
     },
-
     "approvedBy": {
       "type": "string",
       "description": "Identifier of the human or system that approved this prompt.",
       "minLength": 1
     },
-
     "lastReviewedAt": {
       "type": "string",
       "description": "ISO timestamp of the most recent review.",
       "format": "date-time"
     },
-
     "lastApprovedAt": {
       "type": "string",
       "description": "ISO timestamp of approval.",
       "format": "date-time"
     },
-
     "supersedes": {
       "type": "string",
       "description": "PromptId of the prompt version this one replaces."
     },
-
     "notes": {
       "type": "string",
       "description": "Optional human-readable notes about lifecycle decisions."
@@ -100,180 +86,83 @@ This schema is intentionally **small, strict, and boring**.
 }
 ```
 
-This is deliberately conservative. You can always loosen later.
+Place this file at `/vibeify/registry/schemas/prompt-lifecycle.schema.v1.json` and reference it from each execution envelope under the `lifecycle` field.
 
----
+## 3. Status semantics (how each status behaves)
 
-## 3. Lifecycle state semantics (this is the real value)
-
-Write these rules down somewhere visible.
+Lifecycle is meaningful only if the semantics of each status are clear and enforced. Adopt these rules in the runner and CI:
 
 ### `draft`
 
-* ✏️ Editable
-* ▶️ Executable locally
-* ❌ Not allowed in CI
-* ❌ Outputs not promotable
+- Editable without version bumps.
+- Executable only in local development.
+- Outputs are never promoted.
+- Must not be run in CI.
 
-Use for:
-
-* experimentation
-* inbox-refined prompts
-* WIP
-
----
+Use this for experimentation, WIP, and prompts still being refined.
 
 ### `review`
 
-* ✏️ Editable
-* ▶️ Executable locally
-* ⚠️ CI execution allowed but **non-blocking**
-* ⚠️ Outputs marked *non-authoritative*
+- Editable without version bumps.
+- Executable locally and in CI, but CI must not block on its results.
+- Outputs are marked non-authoritative.
 
-Use for:
-
-* peer review
-* AI-assisted review
-* dry runs in pipelines
-
----
+Use for peer review, AI-assisted review, and dry runs in pipelines.
 
 ### `approved`
 
-* 🔒 Changes require version bump
-* ▶️ Executable everywhere
-* ✅ CI-blocking assertions enforced
-* ✅ Outputs promotable to main artifacts
+- Changes require version bumps.
+- Executable everywhere.
+- CI treats failures as blocking.
+- Outputs are promotable to registries.
 
-This is the **default “production” state**.
-
----
+This is the default “production” status.
 
 ### `deprecated`
 
-* 🔒 No new executions in CI
-* ⚠️ Local execution allowed with warning
-* 🧭 Must point to successor (`supersedes`)
+- No new executions allowed in CI.
+- Local execution allowed with warning.
+- Must reference a successor via `supersedes`.
 
-Use for:
-
-* replacing prompts safely
-* migration periods
-
----
+Use when replacing a prompt with a newer version and during migration periods.
 
 ### `archived`
 
-* ❌ Not executable
-* ❌ Not editable
-* 📦 Retained for audit only
+- Not executable.
+- Not editable.
+- Retained only for audit/compliance.
 
-This is your legal / compliance safety net.
+Use to retain history when a prompt is no longer needed.
 
----
+## 4. Enforcement behaviour
 
-## 4. How lifecycle plugs into the rest of the system
+The lifecycle metadata is enforced in two places:
 
-### 4.1 Where this lives
+- **CLI (`vibeify run`)** – decides whether a local run is permitted and prints warnings.
+- **CI** – determines whether a pipeline should fail. CI must fail if the lifecycle status is invalid, not `approved`, or if assertions fail.
 
-Consistent with earlier decisions:
+A simple enforcement table:
 
-```
-/vibeify/registry/schemas/prompt-lifecycle.schema.v1.json
-```
+| Status     | Allowed in local run | Allowed in CI | Promotable |
+|-----------|----------------------|---------------|-----------|
+| draft      | ✅ (warn)             | ❌            | ❌         |
+| review     | ✅ (warn)             | ✅ (non-blocking) | ⚠️ non-authoritative |
+| approved   | ✅                    | ✅             | ✅        |
+| deprecated | ⚠️ (warn)             | ❌            | ❌         |
+| archived   | ❌                    | ❌             | ❌         |
 
-And referenced per prompt:
+Do not embed lifecycle logic in prompt templates. Keep it in the runner and CI.
 
-```yaml
-lifecycle:
-  status: approved
-  reviewedBy: [human]
-  approvedBy: "tech-lead"
-  lastApprovedAt: "2025-12-16T21:40:00Z"
-```
+## 5. Out of scope for v1
 
----
+Lifecycle v1 deliberately does **not** include:
 
-### 4.2 CLI behaviour (non-negotiable rules)
+- Jira or ticket IDs.
+- Git commit hashes.
+- Owners or teams.
+- Risk classifications.
+- Change history.
 
-| Status     | `vibeify run` | CI | Warning |
-| ---------- | ------------- | -- | ------- |
-| draft      | ✔️ local only | ❌  | yes     |
-| review     | ✔️            | ⚠️ | yes     |
-| approved   | ✔️            | ✔️ | no      |
-| deprecated | ⚠️            | ❌  | yes     |
-| archived   | ❌             | ❌  | n/a     |
+Those might be useful later, but including them now would blur the boundary between governance and workflow. Keep v1 focused on permission and trust.
 
-This logic belongs in the CLI — **not** in prompts.
-
----
-
-### 4.3 CI behaviour (simple and brutal)
-
-* CI must **fail fast** if:
-
-  * lifecycle status is invalid
-  * status is not `approved`
-  * assertions fail
-
-No exceptions. This is how you gain trust.
-
----
-
-## 5. What is deliberately NOT in v1
-
-Do **not** add these yet:
-
-❌ Jira IDs
-❌ Git commit hashes
-❌ Owners / teams
-❌ Risk levels
-❌ Change history
-
-Those are tempting — and wrong for v1.
-
-Lifecycle v1 is about **permission and trust**, nothing else.
-
----
-
-## 6. Sanity check with your “tell a joke” prompt
-
-```yaml
-lifecycle:
-  status: approved
-  reviewedBy: [human]
-  approvedBy: "richard"
-  lastApprovedAt: "2025-12-16T21:45:00Z"
-```
-
-Yes, even jokes can be approved.
-The system doesn’t care *what* the prompt does — only whether it’s governed.
-
----
-
-## 7. You now have a complete core
-
-You now possess:
-
-1. **PromptInputSchema v1** – what a prompt *is*
-2. **PromptOutputSchema v1** – what execution *produces*
-3. **PromptOutputAssertions v1** – when output is *acceptable*
-4. **PromptLifecycleSchema v1** – when a prompt is *trusted*
-
-This is already more rigorous than most AI platforms.
-
----
-
-### Next logical step (strong recommendation)
-
-The next artefact that *naturally* follows is:
-
-> **`prompt-lint.rules.v1.yaml`**
-
-Because now you can lint:
-
-* missing lifecycle
-* mismatched promptClass vs lifecycle
-* missing successCriteria for destructive prompts
-
-If you want, we do that next.
+With this, the core governance triangle—inputs, outputs, lifecycle—is complete, and you can enforce correct usage without polluting prompt content.

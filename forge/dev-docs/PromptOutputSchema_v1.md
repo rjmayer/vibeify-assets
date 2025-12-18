@@ -1,4 +1,6 @@
-PromptOutputSchema has very different failure modes than input, so we’ll be disciplined.
+Prompt outputs need to be validated just like inputs, but the **failure modes are different**.  
+The `PromptOutputSchema` defines the **wrapper** around an LLM‑generated result. It validates the shape of this wrapper so that downstream tools (assertions, CI, registries) can reason about execution outcomes without parsing raw LLM output.  
+This schema applies to the **execution envelope**, not the template or input.
 
 I’ll give you:
 
@@ -10,7 +12,7 @@ I’ll give you:
 
 ---
 
-## 1. Design constraints for Output Schema (lock these in)
+## 1. Design constraints for the output wrapper
 
 **PromptOutputSchema v1 MUST:**
 
@@ -33,7 +35,8 @@ This schema is about **post-execution sanity**, not perfection.
 
 ## 2. Canonical `prompt-output.schema.v1.json`
 
-This is a **meta-output schema**: it wraps whatever the model produced in a predictable envelope that tooling can reason about.
+This is a **meta-output schema**: it wraps whatever the model produced in a predictable envelope that tooling can reason about.  
+The envelope contains the `promptId` to identify the run, the `promptClass` to declare its risk category, a `status` indicating success or failure, the actual `output`, and optional `warnings`, `errors`, and execution `metadata`.
 
 ```json
 {
@@ -44,6 +47,7 @@ This is a **meta-output schema**: it wraps whatever the model produced in a pred
   "type": "object",
   "required": [
     "promptId",
+    "promptClass",
     "status",
     "output"
   ],
@@ -51,6 +55,18 @@ This is a **meta-output schema**: it wraps whatever the model produced in a pred
     "promptId": {
       "type": "string",
       "description": "The promptId that produced this output."
+    },
+
+    "promptClass": {
+      "type": "string",
+      "description": "Classification of the prompt used during execution.",
+      "enum": [
+        "trivial",
+        "conversational",
+        "generative",
+        "transformative",
+        "destructive"
+      ]
     },
 
     "status": {
@@ -119,7 +135,7 @@ This schema is intentionally **loose at the core**, strict at the edges.
 
 ---
 
-## 3. How this is used in practice (important)
+## 3. How this schema is used in practice (important)
 
 ### 3.1 The model never sees this schema
 
@@ -144,6 +160,7 @@ Wrap → Validate → Persist
 ```json
 {
   "promptId": "example.tell-joke.v1",
+  "promptClass": "trivial",
   "status": "success",
   "output": "Why do programmers hate nature? Too many bugs.",
   "metadata": {
@@ -169,6 +186,7 @@ Nothing more. That’s correct.
 ```json
 {
   "promptId": "user.create.summary.v1",
+  "promptClass": "generative",
   "status": "partial",
   "output": {
     "username": "jdoe",
@@ -222,7 +240,7 @@ This mirrors how HTTP works:
 * HTTP defines headers and status codes
 * Payload is application-specific
 
-That’s the right mental model.
+This is the right mental model.
 
 ---
 

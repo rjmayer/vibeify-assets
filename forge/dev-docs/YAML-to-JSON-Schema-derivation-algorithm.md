@@ -1,4 +1,7 @@
-Below is the **exact derivation algorithm**, deliberately written so it can be:
+This document describes the **exact derivation algorithm** for generating a JSON Schema from a prompt template. The goal is to derive a schema for **content inputs** from the authoritative YAML template.  
+By deriving the schema, we ensure that the template remains the single source of truth and that definitions cannot supply undeclared placeholders.
+
+Below is the exact derivation algorithm, deliberately written so it can be:
 
 * implemented verbatim in Node or Python
 * reasoned about in CI
@@ -14,7 +17,8 @@ No hand-waving, no magic.
 
 ## Scope
 
-This algorithm derives a **JSON Schema for prompt inputs** from **one prompt template**.
+This algorithm derives a **JSON Schema for prompt inputs (content)** from **one prompt template**.  
+It does *not* derive schemas for the execution envelope or other metadata.
 
 **Authoritative source:**
 
@@ -32,6 +36,8 @@ placeholders:
     default: ...
     items: ...
     format: ...
+
+> **Naming matters:** placeholder names are preserved verbatim in the derived schema. If your template uses SCREAMING_SNAKE_CASE (e.g. `PROMPT_TITLE`, `OUTPUT_SPEC`), the generated JSON Schema will too. This ensures that the contract matches the template exactly and prevents case drift.
 ```
 
 ---
@@ -182,18 +188,13 @@ if P.required == true AND P.injectedBy != "renderer":
     schema.required.push(PLACEHOLDER_NAME)
 ```
 
-### Renderer-injected rule
+### Renderer‑injected placeholders
 
-You already discovered this implicitly:
+Placeholders that the runtime injects (e.g. `TIMESTAMP`, future fields such as `EXECUTION_ID` or `MODEL_NAME`) **must not** be required from user input.
 
-Examples:
+To indicate this in the template, annotate such placeholders with `injectedBy: renderer`. The derivation algorithm then omits them from the `required` array.
 
-* `TIMESTAMP`
-* future: `EXECUTION_ID`, `MODEL_NAME`
-
-These **must not** be required from user input.
-
-So you formalise it:
+Example annotation in the template:
 
 ```yaml
 TIMESTAMP:
