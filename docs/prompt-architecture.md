@@ -90,6 +90,42 @@ To avoid confusion, Vibeify uses the following terms precisely:
 | **Prompt Execution**   | A single run of an execution envelope. The runner sends the rendered prompt to the LLM and collects the raw output.                                                                                                                                 |
 | **Output Envelope**    | The result of a prompt execution, containing `promptId`, `promptClass`, `status`, the model output, and optional warnings, errors, and metadata. It is validated against `prompt-output.schema.v1.json` and subjected to class-specific assertions. |
 
+### 1.7 CLI Overrides (`--set`)
+
+The CLI supports lightweight, execution-time overrides via the `--set` flag.
+This mechanism is intentionally narrow and strictly constrained.
+
+**Rules:**
+
+1. `--set` may only target keys under the `input` object.
+2. Only placeholders defined in the template may be overridden.
+3. Override keys **must** be written in `SCREAMING_SNAKE_CASE`.
+4. Any attempt to override structural, execution, or governance fields is invalid.
+
+This rule is enforced syntactically and semantically:
+
+- Keys that are not `SCREAMING_SNAKE_CASE` are rejected immediately.
+- Keys that do not exist in the derived input schema are rejected.
+
+Examples:
+
+```bash
+vibeify run services/fun/tell-a-joke.yaml \
+  --set OBJECTIVE="Tell a painfully boring dad joke."
+```
+
+Invalid:
+
+```bash
+--set objective="..."
+--set templateRef="..."
+--set promptClass="trivial"
+```
+
+This convention provides a clear, human-visible contract:
+uppercase keys represent mutable prompt inputs; all other fields are structural and immutable at runtime.
+
+
 ## 2. Lifecycle and Governance
 
 ### 2.1 Purpose of Lifecycle
