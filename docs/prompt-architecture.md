@@ -147,6 +147,139 @@ Invalid:
 This convention provides a clear, human-visible contract:
 uppercase keys represent mutable prompt inputs; all other fields are structural and immutable at runtime.
 
+## 1.8 Template Resolution and Inheritance
+
+Prompt templates in Vibeify may be composed from other templates through a controlled **inheritance and resolution mechanism**. This mechanism exists to promote reuse and consistency while preserving the principle that **templates are the single source of truth for content structure**.
+
+Template resolution is a **compile-time concern** of the renderer. Prompt definitions, execution envelopes, and runtime overrides are unaware of inheritance; they interact only with the fully resolved template.
+
+### 1.8.1 Design Goals
+
+The template resolution mechanism is designed to satisfy the following constraints:
+
+* **Determinism** – Resolving the same template graph must always yield the same result.
+* **Single source of truth** – All placeholders, sections, and defaults originate in templates, never in definitions or envelopes.
+* **Strict boundaries** – Inheritance affects *content structure only*; it must not introduce execution or governance concerns.
+* **Schema fidelity** – The resolved template must produce a single, unambiguous input schema.
+* **Auditability** – It must be possible to explain where every section and placeholder originated.
+
+### 1.8.2 Conceptual Model
+
+Template inheritance in Vibeify follows a **linearised composition model**, comparable to class inheritance with explicit override rules.
+
+A template may declare that it **extends** another template (its parent). Resolution produces a **fully flattened template** by applying the following conceptual steps:
+
+1. Load the parent template.
+2. Resolve the parent’s ancestors recursively.
+3. Merge the child template onto the resolved parent.
+4. Produce a single, concrete template with no remaining inheritance references.
+
+Only the resolved template is used for:
+
+* input schema derivation
+* defaults merging
+* prompt rendering
+
+Inheritance is therefore **transparent to downstream layers**.
+
+### 1.8.3 What Is Inherited
+
+When a template extends another template, the following elements participate in inheritance:
+
+* **Prompt structure**
+  Section ordering, headings, and static text blocks.
+
+* **Placeholders and metadata**
+  Placeholder declarations, including type, required flag, and documentation.
+
+* **Renderer instructions**
+  Any structural rules that affect how the prompt text is assembled.
+
+Defaults are **not inherited implicitly**; defaults are supplied via separate defaults files and merged later in the pipeline.
+
+### 1.8.4 Override Semantics
+
+Child templates may **override** elements of the parent template under strict rules.
+
+#### Placeholders
+
+* A child template may **redeclare** a placeholder that exists in the parent.
+* Redeclaration may:
+
+  * narrow constraints (e.g. make optional → required)
+  * refine documentation
+* Redeclaration may **not**:
+
+  * change the placeholder’s type incompatibly
+  * remove a required placeholder without replacement
+
+This ensures that input schemas derived from child templates remain sound and predictable.
+
+#### Sections and Content Blocks
+
+* A child template may replace or extend named sections defined by the parent.
+* Unreferenced parent sections are inherited unchanged.
+* Section removal must be explicit; silent omission is forbidden.
+
+### 1.8.5 Input Schema Derivation After Resolution
+
+Input schema derivation occurs **only after template resolution**.
+
+The renderer treats the resolved template as if it were a standalone template:
+
+1. Collect all placeholders from the resolved template.
+2. Apply required/optional rules.
+3. Generate a single input schema.
+4. Enforce `additionalProperties: false`.
+
+This guarantees that:
+
+* Prompt definitions cannot distinguish between inherited and native placeholders.
+* CLI overrides (`--set`) behave identically regardless of inheritance depth.
+* No “hidden” inputs exist.
+
+### 1.8.6 Error Conditions
+
+Template resolution must fail fast under the following conditions:
+
+* Circular inheritance
+* Conflicting placeholder types
+* Multiple parents (diamond inheritance is explicitly unsupported)
+* Attempts to override undeclared placeholders
+* Attempts to introduce execution or governance fields
+
+A template that cannot be resolved is **architecturally invalid** and must not produce an input schema.
+
+### 1.8.7 Relationship to `all-purpose`
+
+The `all-purpose` template serves as a **canonical root template**.
+Specialised templates are expected to extend it rather than re-implement common structure.
+
+This establishes a stable baseline:
+
+* Common sections appear everywhere by default.
+* Organisation-wide conventions live in one place.
+* Specialisation remains explicit and reviewable.
+
+Importantly, `all-purpose` is a *template*, not a framework. Its authority comes from reuse, not enforcement.
+
+### 1.8.8 Architectural Boundary
+
+Template inheritance is strictly a **content-layer concern**.
+
+It must not:
+
+* influence lifecycle behaviour
+* inject execution metadata
+* alter promptClass semantics
+* change output validation rules
+
+Those concerns belong exclusively to the execution envelope, linting, and assertions layers.
+
+### Summary
+
+Template resolution allows Vibeify to scale from a single prompt to a large, coherent prompt ecosystem without sacrificing determinism or clarity. By resolving inheritance early and producing a flattened, schema-derivable template, the system preserves clean boundaries while enabling reuse and specialisation.
+
 
 ## 2. Lifecycle and Governance
 

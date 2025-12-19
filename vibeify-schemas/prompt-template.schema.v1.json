@@ -1,0 +1,133 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://vibeify.dev/schemas/prompt-template.schema.v1.json",
+  "title": "Vibeify Prompt Template Schema v1",
+  "description": "Validates the structure of a prompt template. Templates define prompt content, placeholders, and optional inheritance. Execution, governance, defaults, and schemas are explicitly forbidden.",
+  "type": "object",
+
+  "required": [
+    "id",
+    "sections",
+    "placeholders"
+  ],
+
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Stable identifier for this template."
+    },
+
+    "extends": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Optional reference to a parent template. Multiple inheritance is not supported."
+    },
+
+    "description": {
+      "type": "string",
+      "description": "Human-readable description of the template’s purpose."
+    },
+
+    "sections": {
+      "type": "object",
+      "description": "Named prompt sections that make up the rendered prompt.",
+      "minProperties": 1,
+      "additionalProperties": {
+        "$ref": "#/definitions/section"
+      }
+    },
+
+    "placeholders": {
+      "type": "object",
+      "description": "Declared placeholders available to the template and its children.",
+      "minProperties": 1,
+      "additionalProperties": {
+        "$ref": "#/definitions/placeholder"
+      }
+    }
+  },
+
+  "additionalProperties": false,
+
+  "definitions": {
+    "section": {
+      "type": "object",
+      "required": ["text"],
+      "properties": {
+        "text": {
+          "type": "string",
+          "description": "Static text for this section. May reference declared placeholders."
+        },
+
+        "override": {
+          "type": "boolean",
+          "description": "If true, explicitly overrides the section from the parent template.",
+          "default": false
+        },
+
+        "remove": {
+          "type": "boolean",
+          "description": "If true, explicitly removes the section inherited from the parent.",
+          "default": false
+        }
+      },
+      "additionalProperties": false,
+      "not": {
+        "required": ["override", "remove"],
+        "properties": {
+          "override": { "const": true },
+          "remove": { "const": true }
+        }
+      }
+    },
+
+    "placeholder": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["string", "number", "boolean", "array", "object"],
+          "description": "JSON type of the placeholder."
+        },
+
+        "items": {
+          "type": "object",
+          "description": "Item type for array placeholders.",
+          "required": ["type"],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["string", "number", "boolean", "object"]
+            }
+          },
+          "additionalProperties": false
+        },
+
+        "required": {
+          "type": "boolean",
+          "description": "Whether this placeholder must be provided by the prompt definition.",
+          "default": false
+        },
+
+        "description": {
+          "type": "string",
+          "description": "Human-readable description of the placeholder."
+        }
+      },
+      "additionalProperties": false,
+
+      "allOf": [
+        {
+          "if": {
+            "properties": { "type": { "const": "array" } }
+          },
+          "then": {
+            "required": ["items"]
+          }
+        }
+      ]
+    }
+  }
+}
