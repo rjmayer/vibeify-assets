@@ -207,8 +207,8 @@ template:
   try {
     assertThrows(
       () => resolveTemplate(multiParentPath),
-      "MULTIPLE_PARENTS",
-      "Should reject multiple parents"
+      "UNSUPPORTED_INHERITANCE_KEY",
+      "Should reject unsupported inheritance keys (parentRef)"
     );
   } finally {
     fs.unlinkSync(multiParentPath);
@@ -415,8 +415,8 @@ runner.test("G1 - Execution Metadata in Template", () => {
   
   assertThrows(
     () => resolveTemplate(templatePath),
-    "FORBIDDEN_FIELD",
-    "Should reject templates with execution metadata"
+    "UNKNOWN_FIELD",
+    "Should reject templates with execution metadata (as unknown fields)"
   );
 });
 
@@ -499,8 +499,8 @@ template:
   try {
     assertThrows(
       () => resolveTemplate(childOfBadPath),
-      "FORBIDDEN_FIELD",
-      "Should detect forbidden fields in parent template"
+      "UNKNOWN_FIELD",
+      "Should detect unknown fields (including governance) in parent template"
     );
   } finally {
     fs.unlinkSync(badParentPath);
@@ -602,6 +602,322 @@ runner.test("I2 - Error Specificity", () => {
     assert(error.category, "Should have category");
     assert(error.message, "Should have message");
     assert(error.category === "CIRCULAR_INHERITANCE", "Should have correct category");
+  }
+});
+
+// ============================================================================
+// Category J — V1 Conformance Tests (New Requirements)
+// ============================================================================
+
+runner.test("J1 - Reject 'inherits' inheritance syntax", () => {
+  const inheritsPath = path.join(FIXTURES_DIR, "test-inherits.yaml");
+  const inheritsContent = `
+inherits: parent.yaml
+
+metadata:
+  templateId: "test-inherits"
+  title: "Test Inherits"
+  version: "1.0.0"
+
+placeholders:
+  OBJECTIVE:
+    type: string
+    required: true
+
+template:
+  test: "test"
+`;
+  
+  fs.writeFileSync(inheritsPath, inheritsContent);
+  
+  try {
+    assertThrows(
+      () => resolveTemplate(inheritsPath),
+      "UNSUPPORTED_INHERITANCE_KEY",
+      "Should reject 'inherits' key"
+    );
+  } finally {
+    fs.unlinkSync(inheritsPath);
+  }
+});
+
+runner.test("J2 - Reject 'parentRef' inheritance syntax", () => {
+  const parentRefPath = path.join(FIXTURES_DIR, "test-parentref.yaml");
+  const parentRefContent = `
+parentRef: parent.yaml
+
+metadata:
+  templateId: "test-parentref"
+  title: "Test ParentRef"
+  version: "1.0.0"
+
+placeholders:
+  OBJECTIVE:
+    type: string
+    required: true
+
+template:
+  test: "test"
+`;
+  
+  fs.writeFileSync(parentRefPath, parentRefContent);
+  
+  try {
+    assertThrows(
+      () => resolveTemplate(parentRefPath),
+      "UNSUPPORTED_INHERITANCE_KEY",
+      "Should reject 'parentRef' key"
+    );
+  } finally {
+    fs.unlinkSync(parentRefPath);
+  }
+});
+
+runner.test("J3 - Reject object-based extends syntax", () => {
+  const objectExtendsPath = path.join(FIXTURES_DIR, "test-object-extends.yaml");
+  const objectExtendsContent = `
+extends:
+  templateRef: parent.yaml
+
+metadata:
+  templateId: "test-object-extends"
+  title: "Test Object Extends"
+  version: "1.0.0"
+
+placeholders:
+  OBJECTIVE:
+    type: string
+    required: true
+
+template:
+  test: "test"
+`;
+  
+  fs.writeFileSync(objectExtendsPath, objectExtendsContent);
+  
+  try {
+    assertThrows(
+      () => resolveTemplate(objectExtendsPath),
+      "INVALID_EXTENDS_FORMAT",
+      "Should reject object-based extends"
+    );
+  } finally {
+    fs.unlinkSync(objectExtendsPath);
+  }
+});
+
+runner.test("J4 - Reject templates with 'context' field", () => {
+  const contextPath = path.join(FIXTURES_DIR, "test-context.yaml");
+  const contextContent = `
+metadata:
+  templateId: "test-context"
+  title: "Test Context"
+  version: "1.0.0"
+
+context:
+  someRule: "value"
+
+placeholders:
+  OBJECTIVE:
+    type: string
+    required: true
+
+template:
+  test: "{{OBJECTIVE}}"
+`;
+  
+  fs.writeFileSync(contextPath, contextContent);
+  
+  try {
+    assertThrows(
+      () => resolveTemplate(contextPath),
+      "UNKNOWN_FIELD",
+      "Should reject 'context' field"
+    );
+  } finally {
+    fs.unlinkSync(contextPath);
+  }
+});
+
+runner.test("J5 - Reject templates with 'schemas' field", () => {
+  const schemasPath = path.join(FIXTURES_DIR, "test-schemas.yaml");
+  const schemasContent = `
+metadata:
+  templateId: "test-schemas"
+  title: "Test Schemas"
+  version: "1.0.0"
+
+schemas:
+  input: "some-schema.json"
+
+placeholders:
+  OBJECTIVE:
+    type: string
+    required: true
+
+template:
+  test: "{{OBJECTIVE}}"
+`;
+  
+  fs.writeFileSync(schemasPath, schemasContent);
+  
+  try {
+    assertThrows(
+      () => resolveTemplate(schemasPath),
+      "UNKNOWN_FIELD",
+      "Should reject 'schemas' field"
+    );
+  } finally {
+    fs.unlinkSync(schemasPath);
+  }
+});
+
+runner.test("J6 - Reject templates with 'developer_controls' field", () => {
+  const devControlsPath = path.join(FIXTURES_DIR, "test-developer-controls.yaml");
+  const devControlsContent = `
+metadata:
+  templateId: "test-dev-controls"
+  title: "Test Developer Controls"
+  version: "1.0.0"
+
+developer_controls:
+  allowOverride: true
+
+placeholders:
+  OBJECTIVE:
+    type: string
+    required: true
+
+template:
+  test: "{{OBJECTIVE}}"
+`;
+  
+  fs.writeFileSync(devControlsPath, devControlsContent);
+  
+  try {
+    assertThrows(
+      () => resolveTemplate(devControlsPath),
+      "UNKNOWN_FIELD",
+      "Should reject 'developer_controls' field"
+    );
+  } finally {
+    fs.unlinkSync(devControlsPath);
+  }
+});
+
+runner.test("J7 - Reject templates with unknown top-level keys", () => {
+  const unknownKeyPath = path.join(FIXTURES_DIR, "test-unknown-key.yaml");
+  const unknownKeyContent = `
+metadata:
+  templateId: "test-unknown"
+  title: "Test Unknown Key"
+  version: "1.0.0"
+
+customField: "should not be allowed"
+
+placeholders:
+  OBJECTIVE:
+    type: string
+    required: true
+
+template:
+  test: "{{OBJECTIVE}}"
+`;
+  
+  fs.writeFileSync(unknownKeyPath, unknownKeyContent);
+  
+  try {
+    assertThrows(
+      () => resolveTemplate(unknownKeyPath),
+      "UNKNOWN_FIELD",
+      "Should reject unknown top-level keys"
+    );
+  } finally {
+    fs.unlinkSync(unknownKeyPath);
+  }
+});
+
+runner.test("J8 - Resolved output contains only content fields", () => {
+  const templatePath = path.join(FIXTURES_DIR, "child.yaml");
+  const resolved = resolveTemplate(templatePath);
+  
+  // Check that only content fields are present
+  const keys = Object.keys(resolved);
+  const allowedKeys = ["metadata", "placeholders", "template"];
+  
+  for (const key of keys) {
+    assert(
+      allowedKeys.includes(key),
+      `Resolved template should only contain content fields, found: ${key}`
+    );
+  }
+  
+  // Check that non-content fields are NOT present
+  assert(!resolved.context, "Resolved template should not contain 'context'");
+  assert(!resolved.schemas, "Resolved template should not contain 'schemas'");
+  assert(!resolved.developer_controls, "Resolved template should not contain 'developer_controls'");
+  assert(!resolved.extends, "Resolved template should not contain 'extends'");
+  assert(!resolved.inherits, "Resolved template should not contain 'inherits'");
+  assert(!resolved.parentRef, "Resolved template should not contain 'parentRef'");
+});
+
+runner.test("J9 - Input schema derivation runs after successful resolution", () => {
+  // This test verifies that schema derivation only works with resolved templates
+  const templatePath = path.join(FIXTURES_DIR, "child.yaml");
+  
+  // First resolve
+  const resolved = resolveTemplate(templatePath);
+  assert(resolved, "Resolution should succeed");
+  
+  // Write resolved template to temp file for schema derivation
+  const tempPath = path.join(FIXTURES_DIR, "temp-resolved-j9.yaml");
+  fs.writeFileSync(tempPath, yaml.dump(resolved));
+  
+  try {
+    // Now derive schema
+    const schema = derivePromptInputSchema(tempPath);
+    
+    assert(schema, "Schema derivation should succeed after resolution");
+    assert(schema.type === "object", "Schema should be object type");
+    assert(schema.properties, "Schema should have properties");
+    
+    // Verify all placeholders from resolved template are in schema
+    const placeholderNames = Object.keys(resolved.placeholders);
+    const schemaProps = Object.keys(schema.properties);
+    
+    assert(
+      placeholderNames.every(name => schemaProps.includes(name)),
+      "All resolved placeholders should appear in schema"
+    );
+  } finally {
+    fs.unlinkSync(tempPath);
+  }
+});
+
+runner.test("J10 - Only string-based extends syntax is accepted", () => {
+  // Create a valid template with string-based extends
+  const validPath = path.join(FIXTURES_DIR, "test-valid-extends.yaml");
+  const validContent = `
+extends: parent.yaml
+
+metadata:
+  templateId: "test-valid"
+  title: "Test Valid Extends"
+  version: "1.0.0"
+
+template:
+  new_section: "additional content"
+`;
+  
+  fs.writeFileSync(validPath, validContent);
+  
+  try {
+    // This should succeed
+    const resolved = resolveTemplate(validPath);
+    assert(resolved, "String-based extends should be accepted");
+    assert(!resolved.extends, "Resolved template should not contain extends");
+  } finally {
+    fs.unlinkSync(validPath);
   }
 });
 
