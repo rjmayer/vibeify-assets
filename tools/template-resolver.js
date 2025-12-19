@@ -175,11 +175,30 @@ function buildInheritanceChain(templateRef, baseDir) {
     // Add to chain
     chain.push({ template, ref: currentRef, absPath });
     
-    // Check for parent
-    const parentRef = template.extends || template.parentRef || null;
+    // Check for parent - support multiple syntaxes
+    let parentRef = null;
+    
+    if (template.extends) {
+      // Support both simple string and nested object with templateRef
+      if (typeof template.extends === 'string') {
+        parentRef = template.extends;
+      } else if (typeof template.extends === 'object' && template.extends.templateRef) {
+        parentRef = template.extends.templateRef;
+      }
+    } else if (template.inherits) {
+      // Support inherits with templateRef
+      if (typeof template.inherits === 'string') {
+        parentRef = template.inherits;
+      } else if (typeof template.inherits === 'object' && template.inherits.templateRef) {
+        parentRef = template.inherits.templateRef;
+      }
+    } else if (template.parentRef) {
+      parentRef = template.parentRef;
+    }
     
     // Check for multiple parents
-    if (template.extends && template.parentRef && template.extends !== template.parentRef) {
+    const parentCount = [template.extends, template.inherits, template.parentRef].filter(p => p != null).length;
+    if (parentCount > 1) {
       throw new TemplateResolutionError(
         `Template declares multiple parents`,
         "MULTIPLE_PARENTS",
@@ -351,7 +370,7 @@ function mergeTemplates(resolutionOrder) {
  */
 function postMergeValidation(resolved) {
   // Ensure no inheritance metadata remains
-  if (resolved.extends || resolved.parentRef) {
+  if (resolved.extends || resolved.parentRef || resolved.inherits) {
     throw new TemplateResolutionError(
       "Resolved template still contains inheritance metadata",
       "INVALID_RESOLVED_TEMPLATE"
@@ -403,6 +422,7 @@ function resolveTemplate(templateRef, baseDir = process.cwd()) {
     // Phase 6: Finalization - remove any inheritance metadata
     delete resolved.extends;
     delete resolved.parentRef;
+    delete resolved.inherits;
     
     return resolved;
   } catch (error) {
