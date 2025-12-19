@@ -84,45 +84,17 @@ function loadTemplate(templateRef, baseDir = process.cwd()) {
  * @param {string} templateRef - Reference for error reporting
  */
 function preValidateTemplate(template, templateRef) {
-  // Check for unsupported inheritance keys first (more specific error)
-  const unsupportedInheritanceKeys = ['inherits', 'parentRef'];
-  for (const key of unsupportedInheritanceKeys) {
-    if (template[key] !== undefined) {
-      throw new TemplateResolutionError(
-        `Template uses unsupported inheritance key '${key}'. Use 'extends' instead.`,
-        "UNSUPPORTED_INHERITANCE_KEY",
-        templateRef
-      );
-    }
-  }
+  // Check for forbidden fields
+  const forbiddenFields = [
+    "promptId", "promptClass", "lifecycle", 
+    "execution", "model", "temperature", "maxTokens"
+  ];
   
-  // Validate extends format (must be a string, not an object)
-  if (template.extends !== undefined) {
-    if (typeof template.extends !== 'string') {
+  for (const field of forbiddenFields) {
+    if (field in template) {
       throw new TemplateResolutionError(
-        `Template 'extends' must be a string path, not ${typeof template.extends}`,
-        "INVALID_EXTENDS_TYPE",
-        templateRef
-      );
-    }
-    if (template.extends.trim() === '') {
-      throw new TemplateResolutionError(
-        `Template 'extends' cannot be empty`,
-        "EMPTY_EXTENDS_VALUE",
-        templateRef
-      );
-    }
-  }
-  
-  // Enforce strict allowlist of permitted top-level keys
-  const allowedKeys = ["metadata", "placeholders", "template", "extends"];
-  const templateKeys = Object.keys(template);
-  
-  for (const key of templateKeys) {
-    if (!allowedKeys.includes(key)) {
-      throw new TemplateResolutionError(
-        `Template contains unknown top-level key: '${key}'. Only ${allowedKeys.join(", ")} are permitted.`,
-        "UNKNOWN_FIELD",
+        `Template contains forbidden execution/governance field: ${field}`,
+        "FORBIDDEN_FIELD",
         templateRef
       );
     }
@@ -208,12 +180,46 @@ function buildInheritanceChain(templateRef, baseDir) {
     // Add to chain
     chain.push({ template, ref: currentRef, absPath });
     
-    // Check for parent - only support 'extends' as a string
+    // Check for parent - support multiple syntaxes
     let parentRef = null;
     
     if (template.extends) {
-      // Pre-validation ensures extends is a non-empty string
-      parentRef = template.extends;
+      // Support both simple string and nested object with templateRef
+      if (typeof template.extends === 'string') {
+        parentRef = template.extends;
+      } else if (
+        typeof template.extends === 'object' &&
+        typeof template.extends.templateRef === 'string' &&
+        template.extends.templateRef.trim() !== ''
+      ) {
+        parentRef = template.extends.templateRef;
+      }
+    } else if (template.inherits) {
+      // Support inherits with templateRef
+      if (typeof template.inherits === 'string') {
+        parentRef = template.inherits;
+      } else if (
+        typeof template.inherits === 'object' &&
+        typeof template.inherits.templateRef === 'string' &&
+        template.inherits.templateRef.trim() !== ''
+      ) {
+        parentRef = template.inherits.templateRef;
+      }
+    } else if (
+      typeof template.parentRef === 'string' &&
+      template.parentRef.trim() !== ''
+    ) {
+      parentRef = template.parentRef;
+    }
+    
+    // Check for multiple parents
+    const parentCount = [template.extends, template.inherits, template.parentRef].filter(p => p != null).length;
+    if (parentCount > 1) {
+      throw new TemplateResolutionError(
+        `Template declares multiple parents`,
+        "MULTIPLE_PARENTS",
+        currentRef
+      );
     }
     
     // Move to parent
@@ -336,11 +342,13 @@ function mergeSections(resolved, childTemplate) {
  * @returns {object} Merged template
  */
 function mergeTemplates(resolutionOrder) {
-  // Phase 3/4: Initialize resolution state (content-only fields)
+  // Phase 3/4: Initialize resolution state
   const resolved = {
     metadata: {},
     placeholders: {},
-    template: {}
+    template: {},
+    context: {},
+    schemas: {}
   };
   
   // Merge each template in order (base first, most specific last)
@@ -359,6 +367,21 @@ function mergeTemplates(resolutionOrder) {
     if (template.template) {
       mergeSections(resolved, template);
     }
+    
+    // Merge context rules
+    if (template.context) {
+      resolved.context = { ...resolved.context, ...template.context };
+    }
+    
+    // Merge schemas
+    if (template.schemas) {
+      resolved.schemas = { ...resolved.schemas, ...template.schemas };
+    }
+    
+    // Merge developer_controls (child overrides parent)
+    if (template.developer_controls) {
+      resolved.developer_controls = { ...resolved.developer_controls, ...template.developer_controls };
+    }
   }
   
   return resolved;
@@ -370,23 +393,11 @@ function mergeTemplates(resolutionOrder) {
  */
 function postMergeValidation(resolved) {
   // Ensure no inheritance metadata remains
-  if (resolved.extends) {
+  if (resolved.extends || resolved.parentRef || resolved.inherits) {
     throw new TemplateResolutionError(
       "Resolved template still contains inheritance metadata",
       "INVALID_RESOLVED_TEMPLATE"
     );
-  }
-  
-  // Ensure only content fields are present
-  const allowedResolvedKeys = ["metadata", "placeholders", "template"];
-  const resolvedKeys = Object.keys(resolved);
-  for (const key of resolvedKeys) {
-    if (!allowedResolvedKeys.includes(key)) {
-      throw new TemplateResolutionError(
-        `Resolved template contains non-content field: '${key}'`,
-        "NON_CONTENT_FIELD"
-      );
-    }
   }
   
   // Ensure placeholders section exists (even if empty for static templates)
@@ -429,11 +440,10 @@ function resolveTemplate(templateRef, baseDir = process.cwd()) {
     // Phase 5: Post-merge validation
     postMergeValidation(resolved);
     
-    // Phase 6: Finalization
-    // No need to explicitly remove inheritance metadata because:
-    // - mergeTemplates() only copies content fields (metadata, placeholders, template)
-    // - The 'extends' key from source templates is never copied to the resolved output
-    // - Post-merge validation ensures no inheritance metadata remains
+    // Phase 6: Finalization - remove any inheritance metadata
+    delete resolved.extends;
+    delete resolved.parentRef;
+    delete resolved.inherits;
     
     return resolved;
   } catch (error) {
