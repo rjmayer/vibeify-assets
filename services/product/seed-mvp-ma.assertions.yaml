@@ -1,0 +1,23 @@
+version: 1
+engine:
+  language: js-expression
+  context: prompt-output-envelope
+
+assertions:
+  - id: has_required_sections
+    description: MVP output must contain all required sections
+    assert: |
+      [
+        "Project Name",
+        "Executive Summary",
+        "Problem Statement",
+        "Target Audience",
+        "Core MVP Features",
+        "Technical Stack"
+      ].every(section => output.includes(section))
+
+  - id: mvp_features_count
+    description: Must list between 3 and 5 MVP features
+    assert: |
+      (output.match(/^- /gm) || []).length >= 3 &&
+      (output.match(/^- /gm) || []).length <= 5

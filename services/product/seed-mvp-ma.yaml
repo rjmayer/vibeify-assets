@@ -1,0 +1,28 @@
+templateRef: ../registry/prompt-templates/product/mvp-proposal.template.v1.yaml
+
+input:
+  PRODUCT_DOMAIN: "cross-platform mobile application"
+
+  TARGET_MARKET: "busy professionals and students"
+
+  STRATEGIC_PERSPECTIVE: >
+    CEO of an innovative software company that designs and delivers mobile apps
+    across diverse categories.
+
+  INNOVATION_CONSTRAINTS:
+    - "Avoid obvious social media or fitness clones"
+    - "Avoid generic AI chatbot apps"
+    - "Focus on a meaningful but under-served problem"
+
+  OUTPUT_SECTIONS:
+    - "Project Name"
+    - "Executive Summary"
+    - "Problem Statement"
+    - "Target Audience"
+    - "Unique Value Proposition & Market Differentiation"
+    - "Core MVP Features"
+    - "Technical Stack"
+    - "User Flow"
+    - "Success Metrics"
+    - "Development Timeline"
+    - "Future Enhancements"

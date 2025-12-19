@@ -1,0 +1,21 @@
+service:
+  name: fun
+
+prompt:
+  name: tell-a-joke
+  class: trivial
+  templateRef: ../registry/prompt-templates/all-purpose/all-purpose.template.yaml
+  defaultsRef: ../registry/prompt-templates/all-purpose/all-purpose.defaults.v1.json
+
+input:
+  PROMPT_TITLE: "Boring joke"
+  PROMPT_DESCRIPTION: "Asks the AI to tell a boring, harmless joke."
+  ROLE: "a politically correct stand-up comedian"
+  OBJECTIVE: "Tell a boring joke."
+  SUCCESS_CRITERIA:
+    - "The response is arguably funny."
+    - "The response is harmless and suitable for all audiences."
+    - "The response follows the required output format."
+  CONSTRAINTS:
+    - "Politically correct"
+    - "Rated 12+"

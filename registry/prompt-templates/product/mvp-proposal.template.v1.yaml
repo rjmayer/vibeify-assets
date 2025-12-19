@@ -1,0 +1,151 @@
+# ============================================================================
+# VIBEIFY PROMPT TEMPLATE — mvp-proposal
+# ============================================================================
+# Specialised template for generating a structured MVP proposal.
+# Inherits structure and execution semantics from all-purpose.template.v1.yaml
+# ============================================================================
+
+metadata:
+  templateId: "product.mvp-proposal"
+  title: "{{PROMPT_TITLE}}"
+  description: "{{PROMPT_DESCRIPTION}}"
+  version: "1.0.0"
+  createdAt: "{{TIMESTAMP}}"
+  authors: []
+  tags:
+    - product
+    - mvp
+    - ideation
+
+inherits:
+  templateRef: "../all-purpose/all-purpose.template.v1.yaml"
+
+# ----------------------------------------------------------------------------
+# PLACEHOLDERS (EXTENDS BASE INPUT CONTRACT)
+# ----------------------------------------------------------------------------
+# NOTE:
+# - All placeholders from all-purpose are still valid.
+# - This template ADDS domain-specific placeholders and
+#   provides stronger defaults for several base placeholders.
+# ----------------------------------------------------------------------------
+
+placeholders:
+
+  PRODUCT_DOMAIN:
+    type: string
+    required: true
+    description: "High-level product category (e.g. cross-platform mobile application)."
+
+  OUTPUT_SECTIONS:
+    type: array
+    items: string
+    required: true
+    description: "Ordered list of required sections in the MVP proposal."
+
+# ----------------------------------------------------------------------------
+# PROMPT BODY OVERRIDES / SPECIALISATION
+# ----------------------------------------------------------------------------
+# These sections intentionally mirror seed-mvp-ma.md as closely as possible.
+# ----------------------------------------------------------------------------
+
+template:
+
+  instruction_layer: |
+    ## Instruction Layer (What the model is)
+
+    **Role:**  
+    Act as the CEO of an innovative software company that designs and delivers
+    {{PRODUCT_DOMAIN}}s across diverse categories.
+
+    **Operating Principles:**  
+    {{OPERATING_PRINCIPLES}}
+
+    **Reasoning Style:**  
+    {{REASONING_STYLE}}
+
+    **Reasoning Visibility:**  
+    {{REASONING_VISIBILITY}}
+
+  goal_layer: |
+    ## Goal Layer (What the model must achieve)
+
+    **Primary Objective:**  
+    Create an original concept for a {{PRODUCT_DOMAIN}} and produce a complete,
+    structured MVP proposal.
+
+    **Success Criteria:**  
+    {{SUCCESS_CRITERIA}}
+
+  context_layer: |
+    ## Context Layer (What the model must know)
+
+    The resulting document will be used as contextual input for later roadmap
+    planning and deeper technical refinement.
+
+    {{CONTEXT}}
+
+    **External Context References:**  
+    {{CONTEXT_REFERENCES}}
+
+  task_layer: |
+    ## Task Layer (What the model must do)
+
+    **Your Mission**
+
+    Invent a **new** product concept — not an imitation of existing mainstream
+    solutions. Focus on a meaningful problem, a clear target demographic, and
+    a compelling value proposition.
+
+    Consider emerging or underused technologies where appropriate.
+
+    **Required Sections**
+
+    You must include the following sections, in order:
+
+    {{OUTPUT_SECTIONS}}
+
+  constraint_layer: |
+    ## Constraint Layer (Rules the model must follow)
+
+    **Hard Constraints:**  
+    {{CONSTRAINTS}}
+
+    Additionally:
+    - Do not estimate costs, timelines, or resources.
+    - Do not reference competitors directly.
+    - Do not include meta commentary or explanations of your process.
+
+    **Preferences:**  
+    {{PREFERENCES}}
+
+  output_layer: |
+    ## Output Layer (What the model must return)
+
+    **Required Output:**  
+    Produce a cleanly structured Markdown document containing all required
+    sections listed above.
+
+    **Formatting Rules:**  
+    - Use clear headings and subheadings
+    - Use bullet points where appropriate
+    - Maintain professional, concise language
+
+  enhancement_layer: |
+    ## Enhancement Layer (Optional Guidance)
+
+    **Creativity Guidelines**
+
+    - Think beyond generic app formats
+    - Address real user needs
+    - Keep the concept achievable for an MVP
+    - Avoid clichés or copies of existing major products
+
+    **Quality Checks:**  
+    {{QUALITY_CHECKS}}
+
+  execution_layer: |
+    ## Execution Layer (Final Instruction)
+
+    **Final Instruction:**  
+    Generate the complete MVP proposal now. Output Markdown only.
+    Do not include explanations about your process.

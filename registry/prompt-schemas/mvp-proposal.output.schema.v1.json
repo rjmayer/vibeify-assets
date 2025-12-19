@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://vibeify.dev/schemas/mvp-proposal.output.schema.v1.json",  "title": "Vibeify Prompt Output Schema v1",
+  "title": "MVP Proposal Output Schema v1",
+  "description": "Validates the structured envelope around an LLM-generated prompt output.",
+  "type": "object",
+  "required": [
+    "Project Name",
+    "Executive Summary",
+    "Problem Statement",
+    "Target Audience",
+    "Unique Value Proposition & Market Differentiation",
+    "Core MVP Features",
+    "Technical Stack",
+    "User Flow",
+    "Success Metrics",
+    "Development Timeline",
+    "Future Enhancements"
+  ],
+  "properties": {
+    "Project Name": { "type": "string" },
+    "Executive Summary": { "type": "string" },
+    "Problem Statement": { "type": "string" },
+    "Target Audience": { "type": "string" },
+    "Unique Value Proposition & Market Differentiation": { "type": "string" },
+    "Core MVP Features": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 3,
+      "maxItems": 5
+    },
+    "Technical Stack": { "type": "string" },
+    "User Flow": { "type": "string" },
+    "Success Metrics": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "Development Timeline": { "type": "string" },
+    "Future Enhancements": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 2,
+      "maxItems": 3
+    }
+  },
+  "additionalProperties": false
+}

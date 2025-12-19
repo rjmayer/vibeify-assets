@@ -1,12 +1,12 @@
 # ============================================================================
-# VIBEIFY PROMPT TEMPLATE — 000-base
+# VIBEIFY PROMPT TEMPLATE — all-purpose
 # ============================================================================
 # This file defines HOW prompts are rendered and WHAT inputs they accept.
 # It is the single source of truth for prompt structure and input contracts.
 # ============================================================================
 
 metadata:
-  templateId: "000-base"
+  templateId: "all-purpose"
   title: "{{PROMPT_TITLE}}"
   description: "{{PROMPT_DESCRIPTION}}"
   version: "1.0.0"
