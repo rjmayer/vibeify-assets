@@ -15,13 +15,6 @@ metadata:
   tags: []
 
 # ----------------------------------------------------------------------------
-# SCHEMA REFERENCES (derived, not authoritative)
-# ----------------------------------------------------------------------------
-schemas:
-  input: "../../schemas/prompt-input.schema.v1.json"
-  output: "../../schemas/prompt-output.schema.v1.json"
-
-# ----------------------------------------------------------------------------
 # PLACEHOLDERS (AUTHORITATIVE INPUT CONTRACT)
 # ----------------------------------------------------------------------------
 placeholders:
@@ -160,13 +153,6 @@ placeholders:
     description: "Determinism expectations."
 
 # ----------------------------------------------------------------------------
-# CONTEXT RESOLUTION
-# ----------------------------------------------------------------------------
-context:
-  inline: "{{CONTEXT}}"
-  files: "{{CONTEXT_REFERENCES}}"
-
-# ----------------------------------------------------------------------------
 # PROMPT BODY
 # ----------------------------------------------------------------------------
 template:
@@ -241,11 +227,3 @@ template:
 
     **Final Instruction"
     {{FINAL_INSTRUCTION}}
-
-# ----------------------------------------------------------------------------
-# DEVELOPER / EXECUTION CONTROLS (NON-RENDERED)
-# ----------------------------------------------------------------------------
-developer_controls:
-  strictnessLevel: "{{STRICTNESS_LEVEL}}"
-  temperatureHints: "{{TEMPERATURE_HINTS}}"
-  determinism: "{{DETERMINISM}}"
