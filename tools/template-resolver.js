@@ -85,20 +85,15 @@ function loadTemplate(templateRef, baseDir = process.cwd()) {
  */
 function preValidateTemplate(template, templateRef) {
   // Check for unsupported inheritance keys first (more specific error)
-  if (template.inherits !== undefined) {
-    throw new TemplateResolutionError(
-      `Template uses unsupported inheritance key 'inherits'. Use 'extends' instead.`,
-      "UNSUPPORTED_INHERITANCE_KEY",
-      templateRef
-    );
-  }
-  
-  if (template.parentRef !== undefined) {
-    throw new TemplateResolutionError(
-      `Template uses unsupported inheritance key 'parentRef'. Use 'extends' instead.`,
-      "UNSUPPORTED_INHERITANCE_KEY",
-      templateRef
-    );
+  const unsupportedInheritanceKeys = ['inherits', 'parentRef'];
+  for (const key of unsupportedInheritanceKeys) {
+    if (template[key] !== undefined) {
+      throw new TemplateResolutionError(
+        `Template uses unsupported inheritance key '${key}'. Use 'extends' instead.`,
+        "UNSUPPORTED_INHERITANCE_KEY",
+        templateRef
+      );
+    }
   }
   
   // Validate extends format (must be a string, not an object)
@@ -434,8 +429,11 @@ function resolveTemplate(templateRef, baseDir = process.cwd()) {
     // Phase 5: Post-merge validation
     postMergeValidation(resolved);
     
-    // Phase 6: Finalization - remove inheritance metadata
-    // Note: 'extends' is never added to resolved template, so nothing to delete
+    // Phase 6: Finalization
+    // No need to explicitly remove inheritance metadata because:
+    // - mergeTemplates() only copies content fields (metadata, placeholders, template)
+    // - The 'extends' key from source templates is never copied to the resolved output
+    // - Post-merge validation ensures no inheritance metadata remains
     
     return resolved;
   } catch (error) {
