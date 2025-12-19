@@ -11,6 +11,11 @@ const yaml = require("js-yaml");
  * 
  * This module resolves template inheritance to produce a fully flattened template
  * with no inheritance metadata remaining.
+ * 
+ * The specification defines a 7-phase resolution algorithm. In this implementation,
+ * the work of conceptual "Phase 3" (Initialize resolution state) is performed as
+ * part of the function labeled "Phase 4" (mergeTemplates), so the concrete phase
+ * functions are numbered 0, 1, 2, 4, 5, and 6.
  */
 
 /**
@@ -182,17 +187,28 @@ function buildInheritanceChain(templateRef, baseDir) {
       // Support both simple string and nested object with templateRef
       if (typeof template.extends === 'string') {
         parentRef = template.extends;
-      } else if (typeof template.extends === 'object' && template.extends.templateRef) {
+      } else if (
+        typeof template.extends === 'object' &&
+        typeof template.extends.templateRef === 'string' &&
+        template.extends.templateRef.trim() !== ''
+      ) {
         parentRef = template.extends.templateRef;
       }
     } else if (template.inherits) {
       // Support inherits with templateRef
       if (typeof template.inherits === 'string') {
         parentRef = template.inherits;
-      } else if (typeof template.inherits === 'object' && template.inherits.templateRef) {
+      } else if (
+        typeof template.inherits === 'object' &&
+        typeof template.inherits.templateRef === 'string' &&
+        template.inherits.templateRef.trim() !== ''
+      ) {
         parentRef = template.inherits.templateRef;
       }
-    } else if (template.parentRef) {
+    } else if (
+      typeof template.parentRef === 'string' &&
+      template.parentRef.trim() !== ''
+    ) {
       parentRef = template.parentRef;
     }
     
@@ -264,6 +280,7 @@ function mergePlaceholders(resolved, childPlaceholders, templateRef) {
       }
       
       // Check constraint weakening
+      // If parent is required and child explicitly sets required to false, that's weakening
       if (parentMeta.required === true && childMeta.required === false) {
         throw new TemplateResolutionError(
           `Cannot weaken constraint for placeholder '${name}': parent is required, child is optional`,
@@ -276,8 +293,10 @@ function mergePlaceholders(resolved, childPlaceholders, templateRef) {
       resolved.placeholders[name] = {
         ...parentMeta,
         ...childMeta,
-        // Strongest wins for required flag
-        required: childMeta.required === true ? true : parentMeta.required
+        // If child explicitly declares required (true/false), use it; otherwise inherit from parent
+        required: typeof childMeta.required === "boolean"
+          ? childMeta.required
+          : parentMeta.required
       };
     }
   }
@@ -298,8 +317,11 @@ function mergeSections(resolved, childTemplate) {
   for (const [sectionName, sectionContent] of Object.entries(childSections)) {
     // Check for explicit override
     if (typeof sectionContent === "object" && sectionContent.override === true) {
-      // Explicit override - replace section
-      resolved.template[sectionName] = sectionContent;
+      // Explicit override - replace section, but strip inheritance metadata
+      const { override, text, ...otherProps } = sectionContent;
+      // If there's a 'text' property, use it as the section content
+      // Otherwise, use the remaining properties (after removing 'override')
+      resolved.template[sectionName] = text !== undefined ? text : (Object.keys(otherProps).length > 0 ? otherProps : sectionContent);
     } else if (typeof sectionContent === "object" && sectionContent.remove === true) {
       // Explicit removal
       delete resolved.template[sectionName];
@@ -315,11 +337,12 @@ function mergeSections(resolved, childTemplate) {
 
 /**
  * Phase 4: Merge templates (core algorithm)
+ * This function also performs Phase 3 (Initialize resolution state)
  * @param {Array} resolutionOrder - Templates in base-first order
  * @returns {object} Merged template
  */
 function mergeTemplates(resolutionOrder) {
-  // Phase 3: Initialize resolution state
+  // Phase 3/4: Initialize resolution state
   const resolved = {
     metadata: {},
     placeholders: {},
@@ -355,9 +378,9 @@ function mergeTemplates(resolutionOrder) {
       resolved.schemas = { ...resolved.schemas, ...template.schemas };
     }
     
-    // Copy developer_controls if present
+    // Merge developer_controls (child overrides parent)
     if (template.developer_controls) {
-      resolved.developer_controls = { ...template.developer_controls };
+      resolved.developer_controls = { ...resolved.developer_controls, ...template.developer_controls };
     }
   }
   
@@ -377,12 +400,10 @@ function postMergeValidation(resolved) {
     );
   }
   
-  // Ensure placeholders exist
-  if (!resolved.placeholders || Object.keys(resolved.placeholders).length === 0) {
-    throw new TemplateResolutionError(
-      "Resolved template has no placeholders",
-      "NO_PLACEHOLDERS"
-    );
+  // Ensure placeholders section exists (even if empty for static templates)
+  // Templates without placeholders are valid (e.g., static templates)
+  if (!resolved.placeholders) {
+    resolved.placeholders = {};
   }
   
   // Check for duplicate placeholder names (should be impossible, but defensive)

@@ -12,7 +12,7 @@ const yaml = require("js-yaml");
  * @returns {object} JSON Schema
  *
  * Usage:
- *	const { derivePromptInputSchema } = require("./derivePromptInputSchema.js");
+ *	const { derivePromptInputSchema } = require("./generate-input-schema.js");
  *	const fs = require("fs");
  *	
  *	const schema = derivePromptInputSchema(

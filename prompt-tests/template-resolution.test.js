@@ -311,10 +311,11 @@ runner.test("E2 - Explicit Section Override", () => {
   
   // Child explicitly overrides intro_section
   assert(resolved.template.intro_section, "Should have intro_section");
-  const introText = resolved.template.intro_section.text || resolved.template.intro_section;
+  // After resolution, section should be a string (metadata stripped)
   assert(
-    typeof introText === 'string' && introText.includes("specialized"),
-    "Should have child's version of intro_section"
+    typeof resolved.template.intro_section === 'string' &&
+      resolved.template.intro_section.includes("specialized"),
+    "Should have child's version of intro_section as string content"
   );
 });
 
@@ -517,8 +518,17 @@ runner.test("H1 - No Inheritance Artifacts", () => {
   
   assert(!resolved.extends, "Should not contain 'extends'");
   assert(!resolved.parentRef, "Should not contain 'parentRef'");
+  assert(!resolved.inherits, "Should not contain 'inherits'");
   assert(resolved.placeholders, "Should contain placeholders");
   assert(resolved.template, "Should contain template");
+  
+  // Check that section-level inheritance metadata is also removed
+  for (const [sectionName, sectionContent] of Object.entries(resolved.template)) {
+    if (typeof sectionContent === "object") {
+      assert(!sectionContent.override, `Section '${sectionName}' should not contain 'override' flag`);
+      assert(!sectionContent.remove, `Section '${sectionName}' should not contain 'remove' flag`);
+    }
+  }
 });
 
 runner.test("H2 - Standalone Equivalence", () => {
