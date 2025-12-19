@@ -1,0 +1,19 @@
+# Test fixture: Child trying to make it optional (D4)
+extends: weakening-parent.yaml
+
+metadata:
+  templateId: "weakening-child"
+  title: "Weakening Child"
+  version: "1.0.0"
+
+placeholders:
+  REQUIRED_FIELD:
+    type: string
+    required: false
+    description: "Trying to make it optional"
+
+template:
+  field_section:
+    override: true
+    text: |
+      {{REQUIRED_FIELD}}

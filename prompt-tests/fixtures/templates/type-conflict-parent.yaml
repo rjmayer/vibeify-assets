@@ -1,0 +1,15 @@
+# Test fixture: Parent with string type (D3)
+metadata:
+  templateId: "type-conflict-parent"
+  title: "Type Conflict Parent"
+  version: "1.0.0"
+
+placeholders:
+  DATA:
+    type: string
+    required: true
+    description: "Data as string"
+
+template:
+  data_section: |
+    {{DATA}}
