@@ -1,6 +1,6 @@
-import fs from "fs";
-import path from "path";
-import yaml from "js-yaml";
+const fs = require("fs");
+const path = require("path");
+const yaml = require("js-yaml");
 
 /**
  * Derive a JSON Schema (Draft-07) from a fully resolved Vibeify prompt template, after
@@ -12,8 +12,8 @@ import yaml from "js-yaml";
  * @returns {object} JSON Schema
  *
  * Usage:
- *	import { derivePromptInputSchema } from "./derivePromptInputSchema.js";
- *	import fs from "fs";
+ *	const { derivePromptInputSchema } = require("./generate-input-schema.js");
+ *	const fs = require("fs");
  *	
  *	const schema = derivePromptInputSchema(
  *	  "registry/templates/prompts/000-base/prompt-template.yaml"
@@ -25,7 +25,7 @@ import yaml from "js-yaml";
  *	  JSON.stringify(schema, null, 2)
  *	);
  */
-export function derivePromptInputSchema(templatePath) {
+function derivePromptInputSchema(templatePath) {
   const absPath = path.resolve(templatePath);
 
   if (!fs.existsSync(absPath)) {
@@ -147,3 +147,7 @@ function isTypeCompatible(value, type) {
       return false;
   }
 }
+
+module.exports = {
+  derivePromptInputSchema
+};
