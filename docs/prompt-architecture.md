@@ -12,6 +12,28 @@ A **prompt template** is a structured Markdown document that defines the section
 
 The template is the single source of truth for what inputs exist.  No undeclared placeholder may be supplied by a prompt definition; conversely, no required placeholder may be omitted without a default.  This contract is enforced by deriving a JSON Schema from the template.
 
+Vibeify does not support free-form or ad-hoc domain parameters.
+
+Any prompt-specific variability (for example: flavour, colour, tone, audience) **must be modelled as placeholders declared in the template**.
+
+Rules:
+
+1. Prompt-specific knobs are declared as optional placeholders in a
+   specialised template that inherits from `all-purpose`.
+2. Such placeholders:
+   - use SCREAMING_SNAKE_CASE
+   - default to `null`
+   - are referenced explicitly in the rendered prompt text
+3. Defaults files may provide `null` baselines or opinionated values,
+   but may not introduce new keys.
+4. These placeholders appear automatically in the derived input schema
+   and are therefore:
+   - overrideable via `--set`
+   - validated deterministically
+   - forbidden if undeclared
+
+This pattern replaces older concepts such as `domainParameters` and ensures that all variability remains schema-visible, lintable and safe to override.
+
 ### 1.2 Deriving the Input Schema
 
 Vibeify automatically generates a **prompt input schema** from the YAML template.  The derivation algorithm is deterministic:

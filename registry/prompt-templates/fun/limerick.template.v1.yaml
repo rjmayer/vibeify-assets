@@ -1,0 +1,34 @@
+version: 1
+id: fun.limerick.template.v1
+description: >
+  Specialised template for generating traditional limericks.
+  Inherits all-purpose and adds optional domain knobs.
+
+extends:
+  templateRef: registry/templates/all-purpose/all-purpose.template.v1.yaml
+
+placeholders:
+  # Added domain knobs (optional)
+  PROTAGONIST:
+    type: string
+    required: false
+    description: Optional protagonist to include naturally in line 1.
+
+  ORIGIN:
+    type: string
+    required: false
+    description: Optional place of origin to include naturally in line 1.
+
+# Template patching: keep this minimal and deterministic.
+# This assumes your inheritance system supports either:
+# - appending to FINAL_INSTRUCTION, or
+# - overriding FINAL_INSTRUCTION default via defaultsRef.
+templatePatches:
+  - op: append
+    path: /sections/FINAL_INSTRUCTION
+    value: |
+
+      Optional domain knobs (use only if provided):
+      - If PROTAGONIST is not null, weave it naturally into line 1.
+      - If ORIGIN is not null, weave it naturally into line 1.
+      - If either is null, do not mention that it was omitted.

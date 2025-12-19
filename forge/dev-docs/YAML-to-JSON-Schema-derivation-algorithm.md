@@ -20,6 +20,8 @@ No hand-waving, no magic.
 This algorithm derives a **JSON Schema for prompt inputs (content)** from **one prompt template**.  
 It does *not* derive schemas for the execution envelope or other metadata.
 
+It operates on the fully resolved template after any inheritance has been resolved.
+
 **Authoritative source:**
 
 ```

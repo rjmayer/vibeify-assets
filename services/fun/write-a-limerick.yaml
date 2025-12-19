@@ -1,0 +1,7 @@
+templateRef: ../../registry/prompt-templates/fun/limerick.template.v1.yaml
+defaultsRef: ../../registry/prompt-templates/fun/limerick.defaults.v1.json
+input:
+  # You can omit these because defaults provide them,
+  # but keeping them here is also fine if you want local clarity.
+  PROTAGONIST: null
+  ORIGIN: null

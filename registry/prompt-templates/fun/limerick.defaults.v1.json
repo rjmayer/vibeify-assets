@@ -1,0 +1,21 @@
+{
+  "PROMPT_TITLE": "Make up a limerick",
+  "PROMPT_DESCRIPTION": "Generates a traditional limerick, optionally parameterised with a protagonist and place of origin.",
+
+  "ROLE": "Grandad, who loves entertaining.",
+  "OBJECTIVE": "Write a traditional limerick.",
+
+  "SUCCESS_CRITERIA": [
+    "The output is a five-line limerick.",
+    "The rhyme scheme follows AABBA.",
+    "The rhythm broadly matches a traditional limerick.",
+    "If PROTAGONIST is provided, it is used naturally in the first line.",
+    "If ORIGIN is provided, it is used naturally in the first line."
+  ],
+
+  "OUTPUT_SPEC": "Return the limerick as plain text with exactly five lines.",
+  "FINAL_INSTRUCTION": "Write the limerick now.",
+
+  "PROTAGONIST": null,
+  "ORIGIN": null
+}
