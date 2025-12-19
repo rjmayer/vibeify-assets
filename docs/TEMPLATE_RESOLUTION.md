@@ -16,13 +16,13 @@ const resolved = resolveTemplate('path/to/template.yaml');
 ## Running Tests
 
 ```bash
-# Run all 25 conformance tests
+# Run all 36 conformance tests
 npm run test:templates
 ```
 
 Expected output:
 ```
-📊 Results: 25 passed, 0 failed
+📊 Results: 36 passed, 0 failed
 ```
 
 ## Documentation
@@ -41,8 +41,8 @@ Expected output:
 
 **`tools/template-resolver.js`**
 - Implements the canonical 7-phase resolution algorithm
-- Supports multiple inheritance syntaxes (`extends`, `inherits`, `parentRef`)
-- Comprehensive error handling with 9 specific categories
+- Supports only canonical `extends: <string>` inheritance syntax (v1 conformant)
+- Comprehensive error handling with specific error categories
 - Deterministic and auditable resolution
 
 Key functions:
@@ -53,7 +53,7 @@ Key functions:
 ### Test Suite
 
 **`prompt-tests/template-resolution.test.js`**
-- 25 REQUIRED conformance tests covering all categories
+- 36 REQUIRED conformance tests covering all categories
 - Simple test framework with clear pass/fail output
 - Comprehensive coverage of all error conditions
 
@@ -67,6 +67,7 @@ Test categories:
 - **G**: Boundary Enforcement (3 tests)
 - **H**: Flattening Guarantees (2 tests)
 - **I**: Failure Semantics (2 tests)
+- **J**: V1 Conformance (11 tests)
 
 ### Test Fixtures
 
@@ -111,38 +112,55 @@ Template Resolution Pipeline:
 |----------|-------------|
 | `TEMPLATE_NOT_FOUND` | Template file doesn't exist |
 | `CIRCULAR_INHERITANCE` | Circular dependency detected |
-| `MULTIPLE_PARENTS` | More than one parent declared |
+| `UNSUPPORTED_INHERITANCE_KEY` | Template uses `inherits` or `parentRef` instead of `extends` |
+| `INVALID_EXTENDS_TYPE` | Template `extends` is not a string (e.g., object or other type) |
+| `EMPTY_EXTENDS_VALUE` | Template `extends` is an empty string |
+| `UNKNOWN_FIELD` | Template contains top-level key not in allowlist |
 | `TYPE_CONFLICT` | Incompatible type change in redeclaration |
 | `CONSTRAINT_WEAKENING` | Required → optional not allowed |
-| `FORBIDDEN_FIELD` | Execution/governance field in template |
 | `MISSING_TYPE` | Placeholder missing required type field |
 | `INVALID_TEMPLATE` | Malformed template structure |
 | `LOAD_ERROR` | Failed to load or parse template |
 
 ## Compliance
 
-This implementation is **fully compliant** with:
+This implementation is **fully v1 compliant** with:
 
 - ✅ Vibeify Prompt Architecture (Section 1.8)
 - ✅ Template Resolution Algorithm (7 phases)
 - ✅ Template Resolution Requirements (all MUST/MUST NOT clauses)
-- ✅ Conformance Tests (25/25 REQUIRED tests)
+- ✅ Conformance Tests (36/36 REQUIRED tests)
+- ✅ Content-only template surface (no `context`, `schemas`, or `developer_controls` fields)
+- ✅ Canonical inheritance syntax only (`extends: <string>`)
+
+## Template Structure (v1)
+
+Templates must contain **only** the following top-level keys:
+
+- **`metadata`** - Template identification and description
+- **`placeholders`** - Input contract (authoritative)
+- **`template`** - Prompt sections and content structure
+- **`extends`** - Parent template reference (string only)
+
+**Forbidden fields** (will cause resolution to fail):
+- ❌ `context` - Execution concern, not template concern
+- ❌ `schemas` - Execution concern, not template concern  
+- ❌ `developer_controls` - Execution concern, not template concern
+- ❌ `inherits` - Use `extends` instead
+- ❌ `parentRef` - Use `extends` instead
 
 ## Usage in Registry
 
-Real templates in the registry use inheritance:
+Real templates in the registry use v1-conformant inheritance:
 
 **Working:**
-- `registry/prompt-templates/product/mvp-proposal.template.v1.yaml`
-  - Uses `inherits.templateRef` syntax
-  - Extends `all-purpose.template.v1.yaml`
-  - Adds domain-specific placeholders
-  - Overrides sections for specialization
-
-**Known Issues:**
+- `registry/prompt-templates/all-purpose/all-purpose.template.v1.yaml`
+  - Root template with comprehensive placeholder set
+  - Contains only content fields (`metadata`, `placeholders`, `template`)
 - `registry/prompt-templates/fun/limerick.template.v1.yaml`
-  - References incorrect path `registry/templates/` (should be `registry/prompt-templates/`)
-  - Needs path correction in separate PR
+  - Uses canonical `extends: ../all-purpose/all-purpose.template.v1.yaml` syntax
+  - Adds domain-specific placeholders
+  - Overrides sections with explicit `override: true`
 
 ## Integration
 

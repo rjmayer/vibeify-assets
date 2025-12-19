@@ -101,14 +101,14 @@ function preValidateTemplate(template, templateRef) {
     if (typeof template.extends !== 'string') {
       throw new TemplateResolutionError(
         `Template 'extends' must be a string path, not ${typeof template.extends}`,
-        "INVALID_EXTENDS_FORMAT",
+        "INVALID_EXTENDS_TYPE",
         templateRef
       );
     }
     if (template.extends.trim() === '') {
       throw new TemplateResolutionError(
         `Template 'extends' cannot be empty`,
-        "INVALID_EXTENDS_FORMAT",
+        "EMPTY_EXTENDS_VALUE",
         templateRef
       );
     }

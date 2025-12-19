@@ -606,7 +606,13 @@ runner.test("I2 - Error Specificity", () => {
 });
 
 // ============================================================================
-// Category J — V1 Conformance Tests (New Requirements)
+// Category J — V1 Conformance Tests
+// ============================================================================
+// These tests verify the v1 conformance requirements:
+// - Only canonical `extends: <string>` inheritance syntax
+// - Content-only template surface (no context, schemas, developer_controls)
+// - Strict allowlist enforcement for top-level keys
+// - Proper error categorization for different validation failures
 // ============================================================================
 
 runner.test("J1 - Reject 'inherits' inheritance syntax", () => {
@@ -698,7 +704,7 @@ template:
   try {
     assertThrows(
       () => resolveTemplate(objectExtendsPath),
-      "INVALID_EXTENDS_FORMAT",
+      "INVALID_EXTENDS_TYPE",
       "Should reject object-based extends"
     );
   } finally {
@@ -894,7 +900,39 @@ runner.test("J9 - Input schema derivation runs after successful resolution", () 
   }
 });
 
-runner.test("J10 - Only string-based extends syntax is accepted", () => {
+runner.test("J10 - Reject empty extends value", () => {
+  const emptyExtendsPath = path.join(FIXTURES_DIR, "test-empty-extends.yaml");
+  const emptyExtendsContent = `
+extends: ""
+
+metadata:
+  templateId: "test-empty-extends"
+  title: "Test Empty Extends"
+  version: "1.0.0"
+
+placeholders:
+  OBJECTIVE:
+    type: string
+    required: true
+
+template:
+  test: "test"
+`;
+  
+  fs.writeFileSync(emptyExtendsPath, emptyExtendsContent);
+  
+  try {
+    assertThrows(
+      () => resolveTemplate(emptyExtendsPath),
+      "EMPTY_EXTENDS_VALUE",
+      "Should reject empty extends value"
+    );
+  } finally {
+    fs.unlinkSync(emptyExtendsPath);
+  }
+});
+
+runner.test("J11 - Only string-based extends syntax is accepted", () => {
   // Create a valid template with string-based extends
   const validPath = path.join(FIXTURES_DIR, "test-valid-extends.yaml");
   const validContent = `
