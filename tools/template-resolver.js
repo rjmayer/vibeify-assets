@@ -183,23 +183,23 @@ function buildInheritanceChain(templateRef, baseDir) {
     
     if (template.extends !== undefined) {
       // Only accept string form
-      if (typeof template.extends === 'string') {
-        const trimmedExtends = template.extends.trim();
-        if (trimmedExtends === '') {
-          throw new TemplateResolutionError(
-            `Template 'extends' must be a non-empty string`,
-            "INVALID_EXTENDS",
-            currentRef
-          );
-        }
-        parentRef = trimmedExtends;
-      } else {
+      if (typeof template.extends !== 'string') {
         throw new TemplateResolutionError(
           `Template 'extends' must be a non-empty string`,
           "INVALID_EXTENDS",
           currentRef
         );
       }
+      
+      const trimmedExtends = template.extends.trim();
+      if (trimmedExtends === '') {
+        throw new TemplateResolutionError(
+          `Template 'extends' must be a non-empty string`,
+          "INVALID_EXTENDS",
+          currentRef
+        );
+      }
+      parentRef = trimmedExtends;
     }
     
     // Move to parent
