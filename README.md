@@ -13,6 +13,19 @@ When the Vibeify CLI initializes a project, it copies the contents of this repoâ
 
 ---
 
+## Documentation
+
+Comprehensive documentation is available in the **[`docs/`](docs/)** directory, organized into:
+
+- **[Architecture](docs/)** - Design concepts and high-level architecture
+- **[Guides](docs/)** - Getting started, template authoring, and contribution guidelines
+- **[Reference](docs/)** - Technical specifications, schemas, and algorithms
+- **[Sandbox](docs/)** - Experimental features and work-in-progress materials
+
+See the **[Documentation Index](docs/README.md)** for a complete navigation guide.
+
+---
+
 ## Template Manifest
 
 The definitive source of truth for which files belong in this template, and how they are managed, is the **[`manifest.yaml`](manifest.yaml)** file in the root of this repository. _**All installation, update, and sync behavior for template files is governed by the manifest.**_
