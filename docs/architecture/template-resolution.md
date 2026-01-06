@@ -27,13 +27,13 @@ Expected output:
 
 ## Documentation
 
-- **[Usage Guide](./template-resolution-usage.md)** - Complete API and best practices
-- **[Examples](./template-resolution-example.md)** - Step-by-step walkthrough
-- **Specification Docs** (in `/forge`):
-  - `TemplateResolutionAlgorithm.md` - Canonical algorithm
-  - `TemplateResolutionAndInheritanceRequirements.md` - Normative requirements
-  - `TemplateResolutionConformanceTests.md` - Test specifications
-  - `TemplateResolution-FullExample.md` - Worked example
+- **[Usage Guide](../guides/getting-started/template-resolution-usage.md)** - Complete API and best practices
+- **[Examples](../guides/getting-started/template-resolution-example.md)** - Step-by-step walkthrough
+- **Specification Docs** (in `docs/reference/algorithms/`):
+  - [Template Resolution Algorithm](../reference/algorithms/template-resolution-algorithm.md) - Canonical algorithm
+  - [Template Resolution Requirements](../reference/algorithms/template-resolution-requirements.md) - Normative requirements
+  - [Template Resolution Conformance Tests](../reference/algorithms/template-resolution-conformance-tests.md) - Test specifications
+  - [Template Resolution Full Example](../reference/algorithms/template-resolution-full-example.md) - Worked example
 
 ## Implementation
 
@@ -187,8 +187,8 @@ Potential improvements (not required for v1):
 
 For questions or issues:
 
-1. Check the [Usage Guide](./template-resolution-usage.md)
-2. Review the [Examples](./template-resolution-example.md)
+1. Check the [Usage Guide](../guides/getting-started/template-resolution-usage.md)
+2. Review the [Examples](../guides/getting-started/template-resolution-example.md)
 3. Run the conformance tests: `npm run test:templates`
 4. Check error category in `TemplateResolutionError`
 
