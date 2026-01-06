@@ -207,8 +207,8 @@ template:
   try {
     assertThrows(
       () => resolveTemplate(multiParentPath),
-      "MULTIPLE_PARENTS",
-      "Should reject multiple parents"
+      "UNKNOWN_FIELD",
+      "Should reject multiple parents (parentRef is now unknown field)"
     );
   } finally {
     fs.unlinkSync(multiParentPath);
@@ -415,8 +415,8 @@ runner.test("G1 - Execution Metadata in Template", () => {
   
   assertThrows(
     () => resolveTemplate(templatePath),
-    "FORBIDDEN_FIELD",
-    "Should reject templates with execution metadata"
+    "UNKNOWN_FIELD",
+    "Should reject templates with execution metadata (now reported as unknown field)"
   );
 });
 
@@ -499,8 +499,8 @@ template:
   try {
     assertThrows(
       () => resolveTemplate(childOfBadPath),
-      "FORBIDDEN_FIELD",
-      "Should detect forbidden fields in parent template"
+      "UNKNOWN_FIELD",
+      "Should detect forbidden fields in parent template (now reported as unknown field)"
     );
   } finally {
     fs.unlinkSync(badParentPath);
@@ -517,8 +517,6 @@ runner.test("H1 - No Inheritance Artifacts", () => {
   const resolved = resolveTemplate(templatePath);
   
   assert(!resolved.extends, "Should not contain 'extends'");
-  assert(!resolved.parentRef, "Should not contain 'parentRef'");
-  assert(!resolved.inherits, "Should not contain 'inherits'");
   assert(resolved.placeholders, "Should contain placeholders");
   assert(resolved.template, "Should contain template");
   
@@ -602,6 +600,242 @@ runner.test("I2 - Error Specificity", () => {
     assert(error.category, "Should have category");
     assert(error.message, "Should have message");
     assert(error.category === "CIRCULAR_INHERITANCE", "Should have correct category");
+  }
+});
+
+// ============================================================================
+// Additional V1 Conformance Tests
+// ============================================================================
+
+runner.test("V1-1 - Multiple Inheritance Syntaxes (extends + inherits)", () => {
+  // Template with both extends and inherits should be rejected
+  const multiSyntaxPath = path.join(FIXTURES_DIR, "multi-syntax.yaml");
+  const multiSyntaxContent = `
+extends: parent.yaml
+inherits: base-no-inheritance.yaml
+
+metadata:
+  templateId: "multi-syntax"
+  title: "Multi Syntax"
+  version: "1.0.0"
+
+template:
+  test: "test"
+`;
+  
+  fs.writeFileSync(multiSyntaxPath, multiSyntaxContent);
+  
+  try {
+    assertThrows(
+      () => resolveTemplate(multiSyntaxPath),
+      "UNKNOWN_FIELD",
+      "Should reject template with both extends and inherits (inherits is unknown field)"
+    );
+  } finally {
+    fs.unlinkSync(multiSyntaxPath);
+  }
+});
+
+runner.test("V1-2 - Non-extends Inheritance Declaration (inherits only)", () => {
+  // Template with only 'inherits' should be rejected
+  const inheritsOnlyPath = path.join(FIXTURES_DIR, "inherits-only.yaml");
+  const inheritsOnlyContent = `
+inherits: parent.yaml
+
+metadata:
+  templateId: "inherits-only"
+  title: "Inherits Only"
+  version: "1.0.0"
+
+template:
+  test: "test"
+`;
+  
+  fs.writeFileSync(inheritsOnlyPath, inheritsOnlyContent);
+  
+  try {
+    assertThrows(
+      () => resolveTemplate(inheritsOnlyPath),
+      "UNKNOWN_FIELD",
+      "Should reject template using 'inherits' keyword"
+    );
+  } finally {
+    fs.unlinkSync(inheritsOnlyPath);
+  }
+});
+
+runner.test("V1-3 - Non-extends Inheritance Declaration (parentRef only)", () => {
+  // Template with only 'parentRef' should be rejected
+  const parentRefOnlyPath = path.join(FIXTURES_DIR, "parentref-only.yaml");
+  const parentRefOnlyContent = `
+parentRef: parent.yaml
+
+metadata:
+  templateId: "parentref-only"
+  title: "ParentRef Only"
+  version: "1.0.0"
+
+template:
+  test: "test"
+`;
+  
+  fs.writeFileSync(parentRefOnlyPath, parentRefOnlyContent);
+  
+  try {
+    assertThrows(
+      () => resolveTemplate(parentRefOnlyPath),
+      "UNKNOWN_FIELD",
+      "Should reject template using 'parentRef' keyword"
+    );
+  } finally {
+    fs.unlinkSync(parentRefOnlyPath);
+  }
+});
+
+runner.test("V1-4 - Object-based extends declaration", () => {
+  // Template with object-based extends should be rejected
+  const objectExtendsPath = path.join(FIXTURES_DIR, "object-extends.yaml");
+  const objectExtendsContent = `
+extends:
+  templateRef: parent.yaml
+
+metadata:
+  templateId: "object-extends"
+  title: "Object Extends"
+  version: "1.0.0"
+
+template:
+  test: "test"
+`;
+  
+  fs.writeFileSync(objectExtendsPath, objectExtendsContent);
+  
+  try {
+    assertThrows(
+      () => resolveTemplate(objectExtendsPath),
+      "INVALID_EXTENDS",
+      "Should reject object-based extends declaration"
+    );
+  } finally {
+    fs.unlinkSync(objectExtendsPath);
+  }
+});
+
+runner.test("V1-5 - Unknown Top-Level Keys Rejected", () => {
+  // Template with unknown top-level keys should be rejected
+  const unknownKeyPath = path.join(FIXTURES_DIR, "unknown-key.yaml");
+  const unknownKeyContent = `
+metadata:
+  templateId: "unknown-key"
+  title: "Unknown Key"
+  version: "1.0.0"
+
+placeholders:
+  OBJECTIVE:
+    type: string
+    required: true
+
+template:
+  test: "{{OBJECTIVE}}"
+
+# Unknown top-level field
+context:
+  some: "data"
+`;
+  
+  fs.writeFileSync(unknownKeyPath, unknownKeyContent);
+  
+  try {
+    assertThrows(
+      () => resolveTemplate(unknownKeyPath),
+      "UNKNOWN_FIELD",
+      "Should reject template with unknown top-level key 'context'"
+    );
+  } finally {
+    fs.unlinkSync(unknownKeyPath);
+  }
+});
+
+runner.test("V1-6 - Extraneous Fields Not Merged (context, schemas, developer_controls)", () => {
+  // Create parent with extraneous fields
+  const parentWithExtrasPath = path.join(FIXTURES_DIR, "parent-with-extras.yaml");
+  const parentWithExtrasContent = `
+metadata:
+  templateId: "parent-with-extras"
+  title: "Parent With Extras"
+  version: "1.0.0"
+
+placeholders:
+  OBJECTIVE:
+    type: string
+    required: true
+
+template:
+  test: "{{OBJECTIVE}}"
+`;
+  
+  fs.writeFileSync(parentWithExtrasPath, parentWithExtrasContent);
+  
+  const childWithExtrasPath = path.join(FIXTURES_DIR, "child-check-no-extras.yaml");
+  const childWithExtrasContent = `
+extends: parent-with-extras.yaml
+
+metadata:
+  templateId: "child-check-no-extras"
+  title: "Child Check No Extras"
+  version: "1.0.0"
+
+template:
+  test2: "test"
+`;
+  
+  fs.writeFileSync(childWithExtrasPath, childWithExtrasContent);
+  
+  try {
+    const resolved = resolveTemplate(childWithExtrasPath);
+    
+    // Resolved template should NOT contain context, schemas, or developer_controls
+    assert(!resolved.context, "Resolved template should not contain 'context'");
+    assert(!resolved.schemas, "Resolved template should not contain 'schemas'");
+    assert(!resolved.developer_controls, "Resolved template should not contain 'developer_controls'");
+    
+    // Should only have metadata, placeholders, template
+    const keys = Object.keys(resolved);
+    assert(keys.includes("metadata"), "Should have metadata");
+    assert(keys.includes("placeholders"), "Should have placeholders");
+    assert(keys.includes("template"), "Should have template");
+    assert(keys.length === 3, `Should only have 3 top-level keys, got ${keys.length}: ${keys.join(', ')}`);
+  } finally {
+    fs.unlinkSync(parentWithExtrasPath);
+    fs.unlinkSync(childWithExtrasPath);
+  }
+});
+
+runner.test("V1-7 - Empty extends String Rejected", () => {
+  // Template with empty extends should be rejected
+  const emptyExtendsPath = path.join(FIXTURES_DIR, "empty-extends.yaml");
+  const emptyExtendsContent = `
+extends: ""
+
+metadata:
+  templateId: "empty-extends"
+  title: "Empty Extends"
+  version: "1.0.0"
+
+template:
+  test: "test"
+`;
+  
+  fs.writeFileSync(emptyExtendsPath, emptyExtendsContent);
+  
+  try {
+    assertThrows(
+      () => resolveTemplate(emptyExtendsPath),
+      "INVALID_EXTENDS",
+      "Should reject empty extends string"
+    );
+  } finally {
+    fs.unlinkSync(emptyExtendsPath);
   }
 });
 

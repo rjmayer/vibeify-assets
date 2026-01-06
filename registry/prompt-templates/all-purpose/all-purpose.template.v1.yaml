@@ -15,14 +15,10 @@ metadata:
   tags: []
 
 # ----------------------------------------------------------------------------
-# SCHEMA REFERENCES (derived, not authoritative)
-# ----------------------------------------------------------------------------
-schemas:
-  input: "../../schemas/prompt-input.schema.v1.json"
-  output: "../../schemas/prompt-output.schema.v1.json"
-
-# ----------------------------------------------------------------------------
 # PLACEHOLDERS (AUTHORITATIVE INPUT CONTRACT)
+# ----------------------------------------------------------------------------
+# NOTE: Schema references and developer controls are now managed outside
+# of the template itself, per V1 conformance requirements.
 # ----------------------------------------------------------------------------
 placeholders:
 
@@ -160,14 +156,9 @@ placeholders:
     description: "Determinism expectations."
 
 # ----------------------------------------------------------------------------
-# CONTEXT RESOLUTION
-# ----------------------------------------------------------------------------
-context:
-  inline: "{{CONTEXT}}"
-  files: "{{CONTEXT_REFERENCES}}"
-
-# ----------------------------------------------------------------------------
 # PROMPT BODY
+# ----------------------------------------------------------------------------
+# NOTE: Context resolution is now handled at render time, not in the template.
 # ----------------------------------------------------------------------------
 template:
 
@@ -239,13 +230,5 @@ template:
   execution_layer: |
     ## Execution Layer (Final Instruction)
 
-    **Final Instruction"
+    **Final Instruction:**
     {{FINAL_INSTRUCTION}}
-
-# ----------------------------------------------------------------------------
-# DEVELOPER / EXECUTION CONTROLS (NON-RENDERED)
-# ----------------------------------------------------------------------------
-developer_controls:
-  strictnessLevel: "{{STRICTNESS_LEVEL}}"
-  temperatureHints: "{{TEMPERATURE_HINTS}}"
-  determinism: "{{DETERMINISM}}"

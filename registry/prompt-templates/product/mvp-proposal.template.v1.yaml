@@ -17,8 +17,7 @@ metadata:
     - mvp
     - ideation
 
-inherits:
-  templateRef: "../all-purpose/all-purpose.template.v1.yaml"
+extends: "../all-purpose/all-purpose.template.v1.yaml"
 
 # ----------------------------------------------------------------------------
 # PLACEHOLDERS (EXTENDS BASE INPUT CONTRACT)
