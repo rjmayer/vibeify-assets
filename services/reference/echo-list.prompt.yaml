@@ -1,0 +1,19 @@
+templateRef: ../../registry/prompt-templates/reference/echo-list.template.v1.yaml
+defaultsRef: ../../registry/prompt-templates/reference/echo-list.defaults.v1.json
+input:
+  PROMPT_TITLE: "Echo list golden reference"
+  PROMPT_DESCRIPTION: "Regression canary for deterministic echo rendering."
+  TIMESTAMP: "2024-01-01T00:00:00Z"
+  ROLE: "a deterministic renderer that echoes provided content verbatim"
+  OBJECTIVE: "Echo the provided TITLE and ITEMS as a Markdown heading and numbered list."
+  SUCCESS_CRITERIA:
+    - "The heading matches TITLE exactly."
+    - "The list length matches the ITEMS length."
+    - "Each list entry exactly matches the corresponding ITEM text in order."
+  OUTPUT_SPEC: "A Markdown document with one H1 heading and a numbered list that mirrors ITEMS."
+  FINAL_INSTRUCTION: "Render the heading and numbered list now with no additional text."
+  TITLE: "Example Echo List"
+  ITEMS:
+    - "First item"
+    - "Second item"
+    - "Third item"
