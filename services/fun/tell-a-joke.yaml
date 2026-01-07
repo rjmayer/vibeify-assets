@@ -1,13 +1,8 @@
-service:
-  name: fun
-
-prompt:
-  name: tell-a-joke
-  class: trivial
-  templateRef: ../registry/prompt-templates/all-purpose/all-purpose.template.yaml
-  defaultsRef: ../registry/prompt-templates/all-purpose/all-purpose.defaults.v1.json
+templateRef: ../../registry/prompt-templates/all-purpose/all-purpose.template.v1.yaml
+defaultsRef: ../../registry/prompt-templates/all-purpose/all-purpose.defaults.v1.json
 
 input:
+  TIMESTAMP: "2024-01-01T00:00:00Z"
   PROMPT_TITLE: "Boring joke"
   PROMPT_DESCRIPTION: "Asks the AI to tell a boring, harmless joke."
   ROLE: "a politically correct stand-up comedian"
