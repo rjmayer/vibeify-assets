@@ -1,0 +1,10 @@
+{
+  "promptClass": "transformative",
+  "status": "success",
+  "output": {
+    "format": "markdown",
+    "content": "# Example Echo List\n\n1. First item\n2. Second item\n3. Third item"
+  },
+  "warnings": [],
+  "errors": []
+}

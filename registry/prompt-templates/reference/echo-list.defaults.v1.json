@@ -1,0 +1,38 @@
+{
+  "$schema": "https://vibeify.dev/schemas/all-purpose-input.schema.v1.json",
+  "PROMPT_DESCRIPTION": "Golden reference prompt that echoes a provided list as Markdown.",
+  "OPERATING_PRINCIPLES": [
+    "Execute deterministically; never invent or alter content.",
+    "Treat placeholders as the single source of truth.",
+    "Avoid commentary, hedging, or creative flourishes.",
+    "Preserve ordering and exact text of provided items."
+  ],
+  "REASONING_STYLE": "Straightforward, stepwise reproduction of provided content.",
+  "REASONING_VISIBILITY": "hidden",
+  "CONTEXT": "Use only the supplied TITLE and ITEMS; no external context is needed.",
+  "CONTEXT_REFERENCES": [],
+  "TASKS": [
+    "Read TITLE and ITEMS exactly as provided.",
+    "Render a Markdown H1 with TITLE.",
+    "Render a numbered list that matches ITEMS in order and wording.",
+    "Return only the heading and list."
+  ],
+  "CONSTRAINTS": [
+    "Do not add, remove, or reorder ITEMS.",
+    "Do not rephrase or annotate ITEMS.",
+    "Do not add introductions or conclusions."
+  ],
+  "PREFERENCES": [
+    "Keep output compact and literal."
+  ],
+  "FORMATTING_RULES": "Use Markdown with a single H1 followed by a numbered list.",
+  "OPTIONAL_BEHAVIOUR": [],
+  "QUALITY_CHECKS": [
+    "Verify the heading matches TITLE exactly.",
+    "Verify list length matches the ITEMS count.",
+    "Verify each list entry matches the corresponding ITEM text."
+  ],
+  "STRICTNESS_LEVEL": "high",
+  "TEMPERATURE_HINTS": "Set temperature to zero; creativity is unwanted.",
+  "DETERMINISM": "Outputs must be deterministic and repeatable."
+}

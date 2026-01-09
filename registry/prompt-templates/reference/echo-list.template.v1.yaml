@@ -1,0 +1,93 @@
+# =========================================================================
+# VIBEIFY PROMPT TEMPLATE — reference/echo-list
+# =========================================================================
+# Specialised template that exercises inheritance, array placeholders,
+# and deterministic rendering.
+extends: ../all-purpose/all-purpose.template.v1.yaml
+
+metadata:
+  templateId: "reference-echo-list"
+  title: "Echo list (golden reference)"
+  version: "1.0.0"
+  description: "Minimal echo-list template for end-to-end conformance"
+
+placeholders:
+  TITLE:
+    type: string
+    required: true
+    description: "Title to use as the H1 heading in the rendered Markdown."
+
+  ITEMS:
+    type: array
+    items: string
+    required: true
+    description: "Ordered list of strings to echo verbatim as a numbered list."
+
+# Override key sections to produce a deterministic, boring renderer prompt
+# while still inheriting structural guarantees from all-purpose.
+template:
+  instruction_layer:
+    override: true
+    text: |
+      # Renderer Role
+      You are {{ROLE}}.
+      Operate deterministically and avoid adding any commentary.
+
+  goal_layer:
+    override: true
+    text: |
+      ## Goal
+      Using the provided TITLE and ITEMS, produce a Markdown document with:
+      - An H1 heading equal to TITLE.
+      - A numbered list that repeats ITEMS exactly in order.
+
+  context_layer:
+    override: true
+    text: |
+      ## Source Data
+      Title:
+      {{TITLE}}
+
+      Items (use as-is, do not edit):
+      {{ITEMS}}
+
+  task_layer:
+    override: true
+    text: |
+      ## Tasks
+      1. Read TITLE and ITEMS exactly as provided.
+      2. Generate a Markdown H1 heading using TITLE.
+      3. Generate a numbered list where each ITEM appears verbatim and in order.
+      4. Do not add, remove, reorder, or rewrite any ITEM.
+      5. Do not add commentary or explanations.
+
+  constraint_layer:
+    override: true
+    text: |
+      ## Constraints
+      - Do not add, remove, or reorder ITEMS.
+      - Do not reword or annotate any ITEM.
+      - Preserve punctuation and casing exactly.
+      - Do not add commentary, introductions, or conclusions.
+
+  output_layer:
+    override: true
+    text: |
+      ## Output Format
+      Render exactly this structure:
+
+      # {{TITLE}}
+
+      {{ITEMS}}
+
+  enhancement_layer:
+    override: true
+    text: |
+      ## Optional Behaviour
+      None. No stylistic flourishes or creativity.
+
+  execution_layer:
+    override: true
+    text: |
+      ## Final Instruction
+      Produce the Markdown output now and nothing else.

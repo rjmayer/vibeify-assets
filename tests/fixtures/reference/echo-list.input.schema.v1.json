@@ -1,0 +1,158 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Vibeify Prompt Input Schema (derived)",
+  "description": "Auto-derived from resolved prompt template",
+  "type": "object",
+  "properties": {
+    "PROMPT_TITLE": {
+      "type": "string",
+      "description": "Human-readable title of the prompt."
+    },
+    "PROMPT_DESCRIPTION": {
+      "type": "string",
+      "description": "Short description of what the prompt does."
+    },
+    "TIMESTAMP": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO timestamp injected at render time."
+    },
+    "ROLE": {
+      "type": "string",
+      "description": "Persona or operating role the model should adopt."
+    },
+    "OPERATING_PRINCIPLES": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Guiding principles that govern how the model should behave.",
+      "default": []
+    },
+    "REASONING_STYLE": {
+      "type": "string",
+      "description": "Expected reasoning approach.",
+      "default": "Analytical, stepwise reasoning."
+    },
+    "REASONING_VISIBILITY": {
+      "type": "string",
+      "description": "Whether the model should expose its reasoning.",
+      "default": "hidden"
+    },
+    "OBJECTIVE": {
+      "type": "string",
+      "description": "Primary goal the model must achieve."
+    },
+    "SUCCESS_CRITERIA": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Conditions that define when the response is considered correct."
+    },
+    "CONTEXT": {
+      "type": "string",
+      "description": "Inline background or domain context.",
+      "default": ""
+    },
+    "CONTEXT_REFERENCES": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Relative paths to external context files.",
+      "default": []
+    },
+    "TASKS": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Explicit steps or tasks the model should perform.",
+      "default": []
+    },
+    "CONSTRAINTS": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Hard rules the model must follow.",
+      "default": []
+    },
+    "PREFERENCES": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Soft preferences or stylistic guidance.",
+      "default": []
+    },
+    "OUTPUT_SPEC": {
+      "type": "string",
+      "description": "Description of the required output structure."
+    },
+    "FORMATTING_RULES": {
+      "type": "string",
+      "description": "Formatting rules the output must follow.",
+      "default": ""
+    },
+    "OPTIONAL_BEHAVIOUR": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Optional enhancements or non-critical behaviours.",
+      "default": []
+    },
+    "QUALITY_CHECKS": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Checks the model should mentally perform before finalising output.",
+      "default": []
+    },
+    "FINAL_INSTRUCTION": {
+      "type": "string",
+      "description": "Final imperative instruction to trigger execution."
+    },
+    "STRICTNESS_LEVEL": {
+      "type": "string",
+      "description": "Execution strictness hint for the backend.",
+      "default": "medium"
+    },
+    "TEMPERATURE_HINTS": {
+      "type": "string",
+      "description": "Creativity / temperature guidance.",
+      "default": "balanced"
+    },
+    "DETERMINISM": {
+      "type": "string",
+      "description": "Determinism expectations.",
+      "default": "aim for repeatable outputs"
+    },
+    "TITLE": {
+      "type": "string",
+      "description": "Title to use as the H1 heading in the rendered Markdown."
+    },
+    "ITEMS": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Ordered list of strings to echo verbatim as a numbered list."
+    }
+  },
+  "required": [
+    "PROMPT_TITLE",
+    "TIMESTAMP",
+    "ROLE",
+    "OBJECTIVE",
+    "SUCCESS_CRITERIA",
+    "OUTPUT_SPEC",
+    "FINAL_INSTRUCTION",
+    "TITLE",
+    "ITEMS"
+  ],
+  "additionalProperties": false
+}

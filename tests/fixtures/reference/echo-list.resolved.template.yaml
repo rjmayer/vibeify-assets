@@ -1,0 +1,172 @@
+metadata:
+  templateId: reference-echo-list
+  title: Echo list (golden reference)
+  description: Minimal echo-list template for end-to-end conformance
+  version: 1.0.0
+  createdAt: '{{TIMESTAMP}}'
+  authors: []
+  tags: []
+placeholders:
+  PROMPT_TITLE:
+    type: string
+    required: true
+    description: Human-readable title of the prompt.
+  PROMPT_DESCRIPTION:
+    type: string
+    required: false
+    description: Short description of what the prompt does.
+  TIMESTAMP:
+    type: string
+    format: date-time
+    required: true
+    description: ISO timestamp injected at render time.
+  ROLE:
+    type: string
+    required: true
+    description: Persona or operating role the model should adopt.
+  OPERATING_PRINCIPLES:
+    type: array
+    items: string
+    required: false
+    default: []
+    description: Guiding principles that govern how the model should behave.
+  REASONING_STYLE:
+    type: string
+    required: false
+    default: Analytical, stepwise reasoning.
+    description: Expected reasoning approach.
+  REASONING_VISIBILITY:
+    type: string
+    required: false
+    default: hidden
+    description: Whether the model should expose its reasoning.
+  OBJECTIVE:
+    type: string
+    required: true
+    description: Primary goal the model must achieve.
+  SUCCESS_CRITERIA:
+    type: array
+    items: string
+    required: true
+    description: Conditions that define when the response is considered correct.
+  CONTEXT:
+    type: string
+    required: false
+    default: ''
+    description: Inline background or domain context.
+  CONTEXT_REFERENCES:
+    type: array
+    items: string
+    required: false
+    default: []
+    description: Relative paths to external context files.
+  TASKS:
+    type: array
+    items: string
+    required: false
+    default: []
+    description: Explicit steps or tasks the model should perform.
+  CONSTRAINTS:
+    type: array
+    items: string
+    required: false
+    default: []
+    description: Hard rules the model must follow.
+  PREFERENCES:
+    type: array
+    items: string
+    required: false
+    default: []
+    description: Soft preferences or stylistic guidance.
+  OUTPUT_SPEC:
+    type: string
+    required: true
+    description: Description of the required output structure.
+  FORMATTING_RULES:
+    type: string
+    required: false
+    default: ''
+    description: Formatting rules the output must follow.
+  OPTIONAL_BEHAVIOUR:
+    type: array
+    items: string
+    required: false
+    default: []
+    description: Optional enhancements or non-critical behaviours.
+  QUALITY_CHECKS:
+    type: array
+    items: string
+    required: false
+    default: []
+    description: Checks the model should mentally perform before finalising output.
+  FINAL_INSTRUCTION:
+    type: string
+    required: true
+    description: Final imperative instruction to trigger execution.
+  STRICTNESS_LEVEL:
+    type: string
+    required: false
+    default: medium
+    description: Execution strictness hint for the backend.
+  TEMPERATURE_HINTS:
+    type: string
+    required: false
+    default: balanced
+    description: Creativity / temperature guidance.
+  DETERMINISM:
+    type: string
+    required: false
+    default: aim for repeatable outputs
+    description: Determinism expectations.
+  TITLE:
+    type: string
+    required: true
+    description: Title to use as the H1 heading in the rendered Markdown.
+  ITEMS:
+    type: array
+    items: string
+    required: true
+    description: Ordered list of strings to echo verbatim as a numbered list.
+template:
+  instruction_layer: |
+    # Renderer Role
+    You are {{ROLE}}.
+    Operate deterministically and avoid adding any commentary.
+  goal_layer: |
+    ## Goal
+    Using the provided TITLE and ITEMS, produce a Markdown document with:
+    - An H1 heading equal to TITLE.
+    - A numbered list that repeats ITEMS exactly in order.
+  context_layer: |
+    ## Source Data
+    Title:
+    {{TITLE}}
+
+    Items (use as-is, do not edit):
+    {{ITEMS}}
+  task_layer: |
+    ## Tasks
+    1. Read TITLE and ITEMS exactly as provided.
+    2. Generate a Markdown H1 heading using TITLE.
+    3. Generate a numbered list where each ITEM appears verbatim and in order.
+    4. Do not add, remove, reorder, or rewrite any ITEM.
+    5. Do not add commentary or explanations.
+  constraint_layer: |
+    ## Constraints
+    - Do not add, remove, or reorder ITEMS.
+    - Do not reword or annotate any ITEM.
+    - Preserve punctuation and casing exactly.
+    - Do not add commentary, introductions, or conclusions.
+  output_layer: |
+    ## Output Format
+    Render exactly this structure:
+
+    # {{TITLE}}
+
+    {{ITEMS}}
+  enhancement_layer: |
+    ## Optional Behaviour
+    None. No stylistic flourishes or creativity.
+  execution_layer: |
+    ## Final Instruction
+    Produce the Markdown output now and nothing else.
