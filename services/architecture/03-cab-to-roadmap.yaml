@@ -1,0 +1,83 @@
+templateRef: registry/templates/all-purpose/all-purpose.template.v1.yaml
+
+defaultsRef: registry/templates/all-purpose/all-purpose.defaults.v1.json
+
+input:
+
+  PROMPT_TITLE: "Derive Project Roadmap from Canonical Architecture Brief (CAB)"
+
+  PROMPT_DESCRIPTION: >
+    Generates a project roadmap derived strictly from a Canonical Architecture
+    Brief (CAB). The roadmap translates architectural decisions into phased
+    implementation milestones without introducing new architecture,
+    assumptions, or features.
+
+  ROLE: >
+    A senior software architect and delivery lead. You respect architectural
+    contracts and treat the CAB as the single source of truth. You translate
+    structure into execution without reinterpretation.
+
+  OBJECTIVE: >
+    Produce a clear, actionable project roadmap that is fully constrained by
+    the provided Canonical Architecture Brief and suitable for guiding
+    implementation planning.
+
+  SUCCESS_CRITERIA:
+    - Every roadmap item traces back to the CAB.
+    - No architectural decisions are introduced or modified.
+    - Dependencies and sequencing reflect architectural boundaries.
+    - Out-of-scope items from the CAB do not appear in the roadmap.
+    - The roadmap can be executed without reinterpreting the architecture.
+
+  CONTEXT: >
+    The input document is a Canonical Architecture Brief that has already been
+    reviewed and approved. It defines system boundaries, principles, trust
+    guarantees, and exclusions that must be respected.
+
+  TASKS:
+    - Identify all architectural components defined in the CAB.
+    - Derive implementation phases that align with architectural layering.
+    - Define major milestones for each phase.
+    - Map milestones to concrete deliverables implied by the CAB.
+    - Identify dependencies strictly from architectural relationships.
+    - Define success criteria based on architectural exit conditions.
+    - Explicitly exclude anything marked out-of-scope in the CAB.
+
+  CONSTRAINTS:
+    - Do not invent new components, layers, or services.
+    - Do not weaken or bypass architectural boundaries.
+    - Do not add features not implied by the CAB.
+    - Do not reinterpret ambiguous areas; surface them as risks instead.
+    - Do not redesign or critique the architecture.
+    - Do not include business, marketing, or monetisation activities.
+
+  OUTPUT_SPEC: >
+    A structured project roadmap in markdown with the following sections:
+    1. Roadmap Overview
+    2. Architectural Basis
+    3. Phase Breakdown
+    4. Milestones & Deliverables
+    5. Dependencies & Sequencing
+    6. Risks & Architectural Unknowns
+    7. Success Metrics
+    8. Explicit Non-Goals
+
+  FORMATTING_RULES: >
+    - Use clear, numbered headings.
+    - Use tables for phases and milestones where helpful.
+    - Keep descriptions concise and execution-focused.
+    - Avoid speculative language.
+    - Maintain professional, neutral tone suitable for stakeholders.
+
+  QUALITY_CHECKS:
+    - No roadmap item contradicts the CAB.
+    - All milestones can be traced to CAB sections.
+    - Architectural unknowns are surfaced, not resolved.
+    - Out-of-scope exclusions are preserved.
+    - The roadmap is feasible without architectural reinterpretation.
+
+  FINAL_INSTRUCTION: >
+    Generate the project roadmap now.
+    Treat the Canonical Architecture Brief as a binding contract.
+    If architectural ambiguities exist, surface them explicitly as risks
+    rather than resolving them.

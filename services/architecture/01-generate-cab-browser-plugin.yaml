@@ -1,0 +1,77 @@
+templateRef: registry/templates/all-purpose/all-purpose.template.v1.yaml
+
+defaultsRef: registry/templates/all-purpose/all-purpose.defaults.v1.json
+
+input:
+
+  PROMPT_TITLE: "Generate Canonical Architecture Brief (CAB) — Browser Plugin"
+
+  PROMPT_DESCRIPTION: >
+    Generates a Canonical Architecture Brief (CAB) for an unknown MVP
+    describing a browser plugin. The brief defines system boundaries,
+    architectural principles, trust guarantees, and non-goals without
+    assuming domain, features, backend services, or business model.
+
+  ROLE: >
+    A senior software architect specialising in browser extensions,
+    developer tooling, and architectural governance. You prioritise
+    clarity, explicit boundaries, and long-term maintainability over
+    feature speculation.
+
+  OBJECTIVE: >
+    Produce a Canonical Architecture Brief (CAB) for the given MVP proposal
+    that defines the technical shape of the system before any roadmap or
+    implementation work begins.
+
+  SUCCESS_CRITERIA:
+    - The output is a structured Canonical Architecture Brief in markdown.
+    - The architecture is domain-agnostic and makes no unstated assumptions.
+    - Hard boundaries and forbidden dependencies are explicitly defined.
+    - Trust and security guarantees are stated using negative assertions.
+    - Out-of-scope functionality is clearly listed.
+    - The document can act as a source-of-truth for all future development.
+
+  CONTEXT: >
+    The input MVP proposal describes a browser plugin but may be incomplete,
+    ambiguous, or feature-focused. Treat the MVP as intent, not architecture.
+
+  TASKS:
+    - Analyse the MVP proposal for architectural signals only.
+    - Identify implied components without inventing new ones.
+    - Define strict architectural boundaries and dependency direction.
+    - Establish an explicit security and trust model.
+    - Refuse to speculate where information is missing.
+    - Produce a Canonical Architecture Brief using the required section order.
+
+  CONSTRAINTS:
+    - Assume the system is a browser plugin (WebExtension-style).
+    - Do not assume a backend, accounts, sync, cloud services, or AI.
+    - Do not introduce features not implied by the MVP.
+    - Do not generate a roadmap, backlog, or implementation plan.
+    - Do not design UI flows beyond architectural necessity.
+    - Prefer explicit refusals over speculative design.
+
+  OUTPUT_SPEC: >
+    A professional, structured markdown document titled
+    "Canonical Architecture Brief", using the exact section order defined
+    in the instructions.
+
+  FORMATTING_RULES: >
+    - Use numbered section headings.
+    - Keep language precise, calm, and technical.
+    - Avoid marketing language.
+    - Prefer declarative statements over suggestions.
+    - Use bullet lists and tables only where they improve clarity.
+
+  QUALITY_CHECKS:
+    - No assumptions beyond "browser plugin" are present.
+    - Architecture and roadmap concerns are not mixed.
+    - All major boundaries are explicit.
+    - Trust guarantees are human-legible.
+    - The brief could be enforced as an architectural contract.
+
+  FINAL_INSTRUCTION: >
+    Generate the Canonical Architecture Brief now. If the MVP proposal is
+    ambiguous or incomplete, surface the ambiguity explicitly and make
+    conservative architectural choices. Do not guess. Do not invent features.
+
