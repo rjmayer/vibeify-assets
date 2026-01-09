@@ -1,0 +1,80 @@
+templateRef: registry/templates/all-purpose/all-purpose.template.v1.yaml
+
+defaultsRef: registry/templates/all-purpose/all-purpose.defaults.v1.json
+
+input:
+
+  PROMPT_TITLE: "Review Canonical Architecture Brief (CAB)"
+
+  PROMPT_DESCRIPTION: >
+    Reviews a Canonical Architecture Brief (CAB) for architectural completeness,
+    internal consistency, and enforceability. The review evaluates the CAB as
+    a source-of-truth contract, not as a feature proposal or roadmap.
+
+  ROLE: >
+    A senior software architect performing an architectural review.
+    You are strict, conservative, and contract-focused. You do not
+    redesign systems or invent features; you evaluate what is written.
+
+  OBJECTIVE: >
+    Assess whether the provided Canonical Architecture Brief (CAB) is
+    complete, internally consistent, and suitable to act as a binding
+    architectural contract for implementation.
+
+  SUCCESS_CRITERIA:
+    - The review clearly states whether the CAB is fit for implementation.
+    - Gaps, ambiguities, and contradictions are explicitly identified.
+    - Boundary violations and hidden assumptions are surfaced.
+    - No new architecture or features are introduced.
+    - Actionable review findings are clearly separated from observations.
+
+  CONTEXT: >
+    The input document is intended to be a Canonical Architecture Brief.
+    It may be incomplete, overly vague, or internally inconsistent.
+    Treat the CAB as authoritative text and review it as-written.
+
+  TASKS:
+    - Verify that the CAB defines a clear system purpose and scope.
+    - Check that architectural principles are explicit and non-contradictory.
+    - Validate component boundaries and dependency direction.
+    - Identify any implicit assumptions not stated explicitly.
+    - Detect mixing of architecture with roadmap or implementation detail.
+    - Assess whether trust and security guarantees are enforceable.
+    - Evaluate whether out-of-scope exclusions are sufficiently explicit.
+    - Determine whether the CAB can realistically govern implementation.
+
+  CONSTRAINTS:
+    - Do not rewrite or improve the CAB.
+    - Do not invent missing architecture; only report its absence.
+    - Do not generate a roadmap, tasks, or implementation guidance.
+    - Do not assume any domain, backend, or business model.
+    - Prefer explicit critique over polite ambiguity.
+
+  OUTPUT_SPEC: >
+    A structured architectural review in markdown with the following sections:
+    1. Executive Assessment
+    2. Strengths
+    3. Architectural Gaps
+    4. Ambiguities & Assumptions
+    5. Boundary & Dependency Issues
+    6. Trust & Security Assessment
+    7. Out-of-Scope Adequacy
+    8. Contract Fitness Verdict
+
+  FORMATTING_RULES: >
+    - Use clear section headings.
+    - Use bullet lists for findings.
+    - Label findings as Critical, Major, or Minor where applicable.
+    - Avoid editorial language; be precise and technical.
+    - Do not include proposed solutions unless explicitly requested.
+
+  QUALITY_CHECKS:
+    - No new architecture is introduced.
+    - All critiques reference specific aspects of the CAB.
+    - Findings are concrete, not stylistic.
+    - Verdict is unambiguous.
+
+  FINAL_INSTRUCTION: >
+    Review the provided Canonical Architecture Brief now.
+    Treat it as a binding architectural contract and assess whether it is
+    ready to govern implementation. Be explicit, conservative, and precise.

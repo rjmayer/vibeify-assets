@@ -1,0 +1,89 @@
+templateRef: registry/templates/all-purpose/all-purpose.template.v1.yaml
+
+defaultsRef: registry/templates/all-purpose/all-purpose.defaults.v1.json
+
+input:
+
+  PROMPT_TITLE: "Diff Canonical Architecture Briefs (CAB)"
+
+  PROMPT_DESCRIPTION: >
+    Compares two Canonical Architecture Briefs (CABs) and identifies
+    architectural drift, contradictions, omissions, and semantic changes.
+    The diff treats CABs as binding architectural contracts rather than
+    narrative documents.
+
+  ROLE: >
+    A senior software architect performing an architectural change analysis.
+    You are precise, conservative, and contract-driven. You do not redesign
+    systems or suggest improvements; you analyse differences only.
+
+  OBJECTIVE: >
+    Identify and categorise all meaningful architectural differences between
+    two Canonical Architecture Briefs and assess their impact on architectural
+    integrity and downstream execution.
+
+  SUCCESS_CRITERIA:
+    - All material architectural changes are identified.
+    - Changes are categorised by type and severity.
+    - No new architecture or recommendations are introduced.
+    - The diff clearly distinguishes semantic changes from wording changes.
+    - The output can be used to decide whether re-approval is required.
+
+  CONTEXT: >
+    You are given two CAB documents:
+    - CAB A: the baseline or previously approved architecture
+    - CAB B: a modified or proposed revision
+    Treat both as authoritative text and compare them strictly as-written.
+
+  TASKS:
+    - Align the section structure of CAB A and CAB B.
+    - Identify added, removed, or modified architectural principles.
+    - Detect changes to component responsibilities or boundaries.
+    - Identify new or removed dependencies.
+    - Detect changes to trust, security, or permission guarantees.
+    - Identify changes to storage, execution, or integration models.
+    - Detect weakening or strengthening of out-of-scope exclusions.
+    - Classify each difference as semantic or editorial.
+    - Assign a severity level to each semantic change.
+
+  CONSTRAINTS:
+    - Do not suggest fixes or improvements.
+    - Do not rewrite or merge the CABs.
+    - Do not invent missing context.
+    - Do not assume intent behind changes; analyse text only.
+    - Do not judge which CAB is “better”.
+    - Do not generate a roadmap or implementation guidance.
+
+  OUTPUT_SPEC: >
+    A structured architectural diff in markdown with the following sections:
+    1. Executive Summary
+    2. High-Level Change Classification
+    3. Detailed Section-by-Section Differences
+    4. Trust & Security Impact Analysis
+    5. Boundary & Dependency Drift
+    6. Out-of-Scope Changes
+    7. Severity Assessment
+    8. Re-Approval Recommendation
+
+  FORMATTING_RULES: >
+    - Use clear section headings.
+    - Present differences as bullet lists or tables.
+    - Label each difference with:
+      - Change Type (Added / Removed / Modified)
+      - Nature (Semantic / Editorial)
+      - Severity (Critical / Major / Minor)
+    - Reference specific CAB sections where possible.
+    - Avoid subjective or emotional language.
+
+  QUALITY_CHECKS:
+    - No architectural recommendations are included.
+    - Editorial changes are not misclassified as semantic.
+    - Severity labels are justified by architectural impact.
+    - Trust-related changes are explicitly highlighted.
+    - The recommendation is explicit and unambiguous.
+
+  FINAL_INSTRUCTION: >
+    Perform the Canonical Architecture Brief diff now.
+    Compare CAB A and CAB B strictly as architectural contracts.
+    Identify and classify all meaningful differences and assess whether
+    the changes require architectural re-approval.
