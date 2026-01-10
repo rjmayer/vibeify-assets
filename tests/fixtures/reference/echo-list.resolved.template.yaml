@@ -3,7 +3,6 @@ metadata:
   title: Echo list (golden reference)
   description: Minimal echo-list template for end-to-end conformance
   version: 1.0.0
-  createdAt: '{{TIMESTAMP}}'
   authors: []
   tags: []
 placeholders:
@@ -15,11 +14,6 @@ placeholders:
     type: string
     required: false
     description: Short description of what the prompt does.
-  TIMESTAMP:
-    type: string
-    format: date-time
-    required: true
-    description: ISO timestamp injected at render time.
   ROLE:
     type: string
     required: true

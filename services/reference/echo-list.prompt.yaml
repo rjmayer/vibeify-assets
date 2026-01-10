@@ -3,7 +3,6 @@ defaultsRef: ../../registry/prompt-templates/reference/echo-list.defaults.v1.jso
 input:
   PROMPT_TITLE: "Echo list golden reference"
   PROMPT_DESCRIPTION: "Regression canary for deterministic echo rendering."
-  TIMESTAMP: "2024-01-01T00:00:00Z"
   ROLE: "a deterministic renderer that echoes provided content verbatim"
   OBJECTIVE: "Echo the provided TITLE and ITEMS as a Markdown heading and numbered list."
   SUCCESS_CRITERIA:

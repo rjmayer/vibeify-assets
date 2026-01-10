@@ -10,7 +10,6 @@ metadata:
   title: "{{PROMPT_TITLE}}"
   description: "{{PROMPT_DESCRIPTION}}"
   version: "1.0.0"
-  createdAt: "{{TIMESTAMP}}"
   authors: []
   tags:
     - product
