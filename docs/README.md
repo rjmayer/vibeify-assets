@@ -9,7 +9,6 @@ High-level design documents and conceptual explanations.
 
 - **[Prompt Architecture](architecture/prompt-architecture.md)** - Core architectural model for structured prompt engineering
 - **[Whitepaper: Prompts as First-Class Units](architecture/whitepaper-structured-prompt-engineering.md)** - Technical model for structured prompt engineering
-- **[Template Resolution](architecture/template-resolution.md)** - Template resolution and inheritance system
 
 ### 📖 Guides
 Practical how-to documentation for using Vibeify Assets.
@@ -17,8 +16,6 @@ Practical how-to documentation for using Vibeify Assets.
 #### Getting Started
 - **[Onboarding](guides/getting-started/onboarding.md)** - Quick start guide for new users
 - **[CI Setup](guides/getting-started/ci.md)** - Continuous Integration configuration
-- **[Template Resolution Usage](guides/getting-started/template-resolution-usage.md)** - How to use template resolution
-- **[Template Resolution Example](guides/getting-started/template-resolution-example.md)** - Practical examples
 
 #### Template Authoring
 - **[Template Authoring Guide](guides/template-authoring/template-authoring-guide.md)** - Complete guide to creating templates
@@ -42,11 +39,6 @@ Technical specifications and schemas.
 - **[Prompt Lifecycle States](reference/schemas/prompt-lifecycle-states.md)** - State definitions
 
 #### Algorithms
-- **[Template Resolution Algorithm](reference/algorithms/template-resolution-algorithm.md)** - Formal algorithm specification
-- **[Template Resolution Requirements](reference/algorithms/template-resolution-requirements.md)** - Requirements and constraints
-- **[Template Resolution Conformance Tests](reference/algorithms/template-resolution-conformance-tests.md)** - Test specifications
-- **[Template Resolution Full Example](reference/algorithms/template-resolution-full-example.md)** - Complete worked example
-- **[YAML to JSON Schema Derivation](reference/algorithms/yaml-to-json-schema-derivation.md)** - Schema derivation algorithm
 - **[Prompt Linting v1](reference/algorithms/prompt-linting-v1.md)** - Linting rules and validation
 
 ### 🔬 Sandbox
