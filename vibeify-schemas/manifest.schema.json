@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Vibeify Template Manifest",
+  "description": "Schema for template manifest used by vibeify-cli",
+  "type": "object",
+  "required": ["version", "files"],
+
+  "properties": {
+    "version": {
+      "type": "integer",
+      "enum": [1],
+      "description": "Manifest version"
+    },
+
+    "files": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/FileEntry" },
+      "minItems": 1
+    }
+  },
+
+  "definitions": {
+    "FileEntry": {
+      "type": "object",
+      "required": ["source", "target"],
+
+      "properties": {
+        "source": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Relative path in the template repository"
+        },
+
+        "target": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Relative path in the user project"
+        },
+
+        "user_editable": {
+          "type": "boolean",
+          "default": true
+        },
+
+        "update_strategy": {
+          "type": "string",
+          "enum": [
+            "preserve-changes",
+            "overwrite",
+            "skip",
+            "merge-attempt"
+          ],
+          "default": "preserve-changes",
+          "description": "Strategy for handling updates"
+        },
+
+        "description": {
+          "type": "string"
+        },
+
+        "when": {
+          "type": "object",
+          "additionalProperties": {
+            "type": ["string", "boolean", "number"]
+          },
+          "description": "Optional conditional logic"
+        }
+      },
+
+      "additionalProperties": false
+    }
+  }
+}

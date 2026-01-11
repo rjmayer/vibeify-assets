@@ -1,0 +1,19 @@
+# Test fixture: Template with forbidden execution metadata (G1)
+metadata:
+  templateId: "forbidden-fields"
+  title: "Forbidden Fields"
+  version: "1.0.0"
+
+# This should cause validation to fail
+promptClass: "trivial"
+lifecycle: "approved"
+
+placeholders:
+  OBJECTIVE:
+    type: string
+    required: true
+    description: "Task"
+
+template:
+  goal_section: |
+    {{OBJECTIVE}}
