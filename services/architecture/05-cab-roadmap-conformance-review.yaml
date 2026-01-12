@@ -1,6 +1,6 @@
-templateRef: registry/templates/all-purpose/all-purpose.template.v1.yaml
+templateRef: ../../registry/prompt-templates/all-purpose/all-purpose.template.v1.yaml
 
-defaultsRef: registry/templates/all-purpose/all-purpose.defaults.v1.json
+defaultsRef: ../../registry/prompt-templates/all-purpose/all-purpose.defaults.v1.json
 
 input:
 
