@@ -1,4 +1,4 @@
-templateRef: ../registry/prompt-templates/product/mvp-proposal.template.v1.yaml
+templateRef: ../../registry/prompt-templates/product/mvp-proposal.template.v1.yaml
 
 input:
   PRODUCT_DOMAIN: "cross-platform mobile application"
