@@ -22,6 +22,15 @@ placeholders:
 
 # Template section overrides to specialize for limericks
 template:
+  context_layer:
+    override: true
+    text: |
+      ## Context Layer (What the model must know)
+
+      Domain knobs (omit if blank):
+      - PROTAGONIST: {{PROTAGONIST}}
+      - ORIGIN: {{ORIGIN}}
+
   execution_layer:
     override: true
     text: |
