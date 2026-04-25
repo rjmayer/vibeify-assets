@@ -1,30 +1,32 @@
-This is a Go based repository with a Ruby client for certain API endpoints. It is primarily responsible for ingesting metered usage for GitHub and recording that usage. Please follow these guidelines when contributing:
+This repository follows these guidelines when contributing:
 
 ## Code Standards
 
 ### Required Before Each Commit
-- Run `make fmt` before committing any changes to ensure proper code formatting
-- This will run gofmt on all Go files to maintain consistent style
+- Run formatting tools before committing any changes to ensure proper code formatting
+- Maintain consistent code style throughout the codebase
 
 ### Development Flow
-- Build: `make build`
-- Test: `make test`
-- Full CI check: `make ci` (includes build, fmt, lint, test)
+- Build: Use the project's build command
+- Test: Run all tests to ensure functionality
+- Lint: Check code quality and adherence to standards
+- Full CI check: Run the complete CI pipeline locally when possible
 
 ## Repository Structure
-- `cmd/`: Main service entry points and executables
-- `internal/`: Logic related to interactions with other GitHub services
-- `lib/`: Core Go packages for billing logic
-- `admin/`: Admin interface components
-- `config/`: Configuration files and templates
-- `docs/`: Documentation
-- `proto/`: Protocol buffer definitions. Run `make proto` after making updates here.
-- `ruby/`: Ruby implementation components. Updates to this folder should include incrementing this version file using semantic versioning: `ruby/lib/billing-platform/version.rb`
-- `testing/`: Test helpers and fixtures
-
+- Understand the project layout and organize code accordingly
+- Place new files in appropriate directories based on their purpose
+- Follow existing patterns for file organization and naming conventions
+- `README.md` is the single point of truth. Update it to reflect all relevant changes in functionality.
+ 
 ## Key Guidelines
-1. Follow Go best practices and idiomatic patterns
+1. Follow language-specific best practices and idiomatic patterns
 2. Maintain existing code structure and organization
-3. Use dependency injection patterns where appropriate
-4. Write unit tests for new functionality. Use table-driven unit tests when possible.
-5. Document public APIs and complex logic. Suggest changes to the `docs/` folder when appropriate
+3. Use appropriate design patterns for the project's architecture
+4. Write tests for new functionality
+5. Document public APIs and complex logic
+6. Review existing documentation and suggest updates when appropriate
+7. Keep commits focused and write clear commit messages
+8. Ensure backward compatibility unless making intentional breaking changes
+
+## Misc
+- Project is still under development, so breaking changes are allowed
