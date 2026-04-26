@@ -43,7 +43,6 @@
      - `assets/` — pristine template set.
      - `runtime/` with subdirectories: `inbox`, `outbox`, `logs`, `cache`.
      - `runtime/install.json` and `runtime/checksums.json` after `init`.
-     - `manifest.json` (manifest specification) under `.vibeify/` in the intended steady state.
    - Creation rules:
      - `vibeify init` **must** ensure `.vibeify/runtime` and all subdirs exist; E2E tests fail otherwise.
    - Update rules:
@@ -60,18 +59,6 @@
      - `vibeify init`:
        - Creates or populates project‑level assets under `vibeify/` (tests assert e.g. `vibeify/test.md` is materialized).
        - Does **not** overwrite existing `vibeify` content unless `--force` or strategy explicitly allows; edge‑case tests validate `.vibeify` pre‑existence handling.
-
-3. **Manifest and checksum system**
-
-   - `.vibeify/assets` must include a `manifest.yaml` (per README; `init` fails if missing).
-   - `.vibeify/runtime/checksums.json`:
-     - Records checksums of installed files.
-     - Is required for successful `init` completion (tests assert existence).
-   - `.vibeify/runtime/install.json`:
-     - Records installation metadata and version information.
-     - Must be present after `init` (asserted by E2E test and Makefile `verify` analogue for `dist/assets/.assets-fingerprint` on build artifacts).
-   - Structural outcome:
-     - Any asset‑modifying operation must route through manifest‑driven logic so that checksums/install metadata remain consistent; ad‑hoc writes to `vibeify/` or `.vibeify/assets` outside that pipeline will break drift/audit correctness.
 
 ---
 
